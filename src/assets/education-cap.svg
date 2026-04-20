@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 160" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="ec-g" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity=".35"/>
+      <stop offset="100%" stop-color="#a78bfa" stop-opacity=".3"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="160" rx="14" fill="#12151e" stroke="rgba(56,189,248,.2)"/>
+  <ellipse cx="240" cy="88" rx="140" ry="36" fill="url(#ec-g)"/>
+  <path d="M100 72l140-28 140 28-140 28z" fill="#0c0e14" stroke="#38bdf8" stroke-width="1.5" stroke-opacity=".5"/>
+  <circle cx="380" cy="96" r="6" fill="#a78bfa"/>
+  <path d="M376 96l8 40" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+  <text x="240" y="48" text-anchor="middle" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="12" font-weight="600" letter-spacing=".12em">EDUCATION</text>
+</svg>

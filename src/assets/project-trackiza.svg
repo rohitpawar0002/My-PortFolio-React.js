@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 240" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="tz-g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="tz-map" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="240" rx="16" fill="#0c0e14"/>
+  <rect x="0" y="0" width="480" height="100" rx="16" fill="url(#tz-g)" opacity=".2"/>
+  <!-- Phone frames -->
+  <g stroke="rgba(148,163,184,.5)" stroke-width="2">
+    <rect x="88" y="36" width="72" height="168" rx="14" fill="#12151e"/>
+    <rect x="320" y="36" width="72" height="168" rx="14" fill="#12151e"/>
+  </g>
+  <!-- Screens -->
+  <rect x="94" y="48" width="60" height="132" rx="6" fill="url(#tz-map)"/>
+  <rect x="326" y="48" width="60" height="132" rx="6" fill="url(#tz-map)"/>
+  <!-- Map route hint -->
+  <path d="M104 140c12-28 28-48 44-52s32 8 40 36" stroke="url(#tz-g)" stroke-width="2" fill="none" stroke-linecap="round" opacity=".85"/>
+  <circle cx="136" cy="96" r="6" fill="#34d399"/>
+  <path d="M332 154c16-40 36-56 48-48s8 32-8 56" stroke="#38bdf8" stroke-width="2" fill="none" stroke-linecap="round" opacity=".75"/>
+  <circle cx="356" cy="108" r="5" fill="#38bdf8"/>
+  <!-- Center pin -->
+  <path d="M240 52c12 0 22 10 22 22 0 16-22 42-22 42s-22-26-22-42c0-12 10-22 22-22z" fill="url(#tz-g)" opacity=".95"/>
+  <circle cx="240" cy="74" r="8" fill="#0c0e14"/>
+</svg>
