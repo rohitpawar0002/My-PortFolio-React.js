@@ -84,6 +84,17 @@ export function Hero() {
               >
                 View experience
               </motion.a>
+              {profile.resumeUrl ? (
+                <motion.a
+                  className="btn btn--ghost"
+                  href={profile.resumeUrl}
+                  download={profile.resumeDownloadName}
+                  whileHover={reduceMotion ? {} : { scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  Download resume
+                </motion.a>
+              ) : null}
             </motion.div>
           </div>
 

@@ -17,12 +17,15 @@ export const profile = {
   github: '',
   /** Served from `public/` — see `public/profile-photo.png`. */
   photo: '/profile-photo.png',
+  /** Résumé PDF in `public/` (e.g. `public/Rohit_Pawar_Resume.pdf`). */
+  resumeUrl: '/Rohit_Pawar_Resume.pdf',
+  resumeDownloadName: 'Rohit_Pawar_Resume.pdf',
 }
 
 export const summary = [
-  'Angular Developer with experience building real-time dashboards, GPS tracking mobile applications, and scalable REST APIs using Angular, TypeScript, Ionic, Node.js, and MS SQL.',
-  'Proficient in leveraging Cursor AI to accelerate feature delivery, build and optimize React.js components, and enhance application performance.',
-  'Skilled in responsive UI components, third-party API integration, and location-based applications. Experienced collaborating with cross-functional teams to deliver scalable, high-performance software.',
+  'Angular and React.js developer: real-time dashboards, GPS tracking mobile apps (Ionic / Capacitor), and scalable REST APIs with Angular, TypeScript, React, Node.js, and MS SQL.',
+  'Comfortable shipping component-driven UIs in React — this portfolio is built with React and Vite (Framer Motion) — and using Cursor AI to refine components, motion, and performance.',
+  'Strong at responsive layouts, API integration, and maps or location features across Angular and React. I enjoy collaborating with teams to deliver maintainable, production-ready software.',
 ]
 
 export const skills = [
@@ -126,6 +129,7 @@ export const projects = [
       'Aligned with municipal operations workflows (cache refresh, date filters, multi-zone rollups) for field supervision teams.',
     ],
     previewVariant: 'browser',
+    browserTitle: 'SWM Dashboard Monitor',
     screenshotIntervalMs: 4000,
     screenshots: [
       { src: '/swm/01-overview.png', label: 'Fleet & route KPIs' },
@@ -139,21 +143,67 @@ export const projects = [
     ],
   },
   {
+    slug: 'nueotel-communication',
+    name: 'Nueotel Communication Service',
+    stack:
+      'Angular 16+, TypeScript, HTML, SCSS, Bootstrap, REST APIs, MS SQL',
+    points: [
+      'Multi-channel enterprise console (Neotel): SMS, WhatsApp, Voice, RCS, and related modules — Angular front ends on live REST / MS SQL backends.',
+      'Voice Call suite: analytics dashboard (Quick Call, Active Response, Forward Connect, weekly/monthly campaigns) with wallet balance and service switcher.',
+      'OBD (outbound dialing): clip library with in-table audio playback and approvals; campaign create/view with searchable grids, statuses, and actions.',
+      'Make Call flows: campaign selection, bulk mobile entry, call type and scheduling, plus guided steps — matching production ops at Nueotel Communication Pvt. Ltd.',
+      'Chatbot module: request KPIs, conversation bar charts, and agent/chatbot analytics (response & interaction time).',
+      'RCS & iinbox dashboards: template/media breakdowns, status analysis, and balance-driven navigation patterns.',
+      'WhatsApp: Send WhatsApp composer with templates, quality/limit indicators, and live mobile preview.',
+    ],
+    previewVariant: 'browser',
+    browserTitle: 'Nueotel Communication Platform',
+    screenshotIntervalMs: 4000,
+    screenshots: [
+      {
+        src: '/nueotel/01-voice-dashboard.png',
+        label: 'Voice Call — service dashboard',
+      },
+      { src: '/nueotel/02-view-clip.png', label: 'View Clip — table' },
+      { src: '/nueotel/03-create-campaign.png', label: 'Create Campaign' },
+      { src: '/nueotel/04-view-campaign.png', label: 'View Campaign — list' },
+      { src: '/nueotel/05-make-call.png', label: 'Make Call' },
+      {
+        src: '/nueotel/06-chatbot-dashboard.png',
+        label: 'Chatbot — service dashboard',
+      },
+      {
+        src: '/nueotel/07-chatbot-analytics.png',
+        label: 'Chatbot — response & interaction',
+      },
+      { src: '/nueotel/08-rcs-dashboard.png', label: 'RCS — service dashboard' },
+      {
+        src: '/nueotel/09-iinbox-dashboard.png',
+        label: 'iinbox — service dashboard',
+      },
+      {
+        src: '/nueotel/10-whatsapp-send.png',
+        label: 'WhatsApp — send & mobile preview',
+      },
+    ],
+  },
+  {
+    slug: 'personal-portfolio',
+    name: 'Personal portfolio website (this site)',
+    stack: 'React, Vite, JavaScript, Framer Motion, CSS',
+    points: [
+      'Single-page portfolio built with React and Vite: modular sections, shared content in one data module, and fast production builds.',
+      'Motion and UX with Framer Motion, fixed navigation with scroll-based active links, and responsive layouts for projects and contact.',
+      'Rich project previews: iPhone and browser mockups, auto-rotating screenshots, and a lightbox gallery with keyboard navigation.',
+    ],
+  },
+  {
     slug: 'authentic-papad',
     name: 'Authentic Papad — E-commerce',
     stack: 'Angular 15, TypeScript, HTML, CSS, Bootstrap',
     points: [
       'Responsive e-commerce platform with login, cart, and order history.',
       'Three core modules: authentication, cart management, and order tracking.',
-    ],
-  },
-  {
-    slug: 'vlabs-simulation',
-    name: 'Simulation Of Science Practical (Vlabs IIT-Bombay)',
-    stack: 'TypeScript, HTML Canvas',
-    points: [
-      'Interactive Canvas simulations for object rotation and animation (mouse and button events).',
-      'Event-driven transformations using TypeScript and Canvas APIs.',
     ],
   },
 ]

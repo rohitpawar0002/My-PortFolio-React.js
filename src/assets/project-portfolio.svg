@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 240" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="pp-g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#61dafb"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="240" rx="16" fill="#0c0e14"/>
+  <rect x="0" y="0" width="480" height="110" rx="16" fill="url(#pp-g)" opacity=".2"/>
+  <!-- Browser window -->
+  <rect x="56" y="44" width="368" height="168" rx="12" fill="#12151e" stroke="rgba(97,218,251,.35)" stroke-width="1"/>
+  <rect x="72" y="58" width="80" height="8" rx="2" fill="#334155" opacity=".8"/>
+  <circle cx="88" cy="62" r="3" fill="#64748b"/>
+  <circle cx="100" cy="62" r="3" fill="#64748b"/>
+  <circle cx="112" cy="62" r="3" fill="#64748b"/>
+  <!-- React atom hint -->
+  <ellipse cx="240" cy="138" rx="52" ry="20" stroke="#61dafb" stroke-width="2" opacity=".75" transform="rotate(-28 240 138)"/>
+  <ellipse cx="240" cy="138" rx="52" ry="20" stroke="#61dafb" stroke-width="2" opacity=".75" transform="rotate(28 240 138)"/>
+  <ellipse cx="240" cy="138" rx="52" ry="20" stroke="#61dafb" stroke-width="2" opacity=".75"/>
+  <circle cx="240" cy="138" r="10" fill="#61dafb" opacity=".9"/>
+  <!-- Vite bolt -->
+  <path d="M332 96l-12 36h18l-10 32 36-48h-22l14-20z" fill="#a78bfa" opacity=".85"/>
+  <rect x="80" y="186" width="200" height="6" rx="2" fill="#f8fafc" opacity=".15"/>
+  <rect x="80" y="198" width="140" height="6" rx="2" fill="#f8fafc" opacity=".1"/>
+</svg>

@@ -4,11 +4,12 @@ import { createPortal } from 'react-dom'
 
 const DEFAULT_INTERVAL_MS = 3500
 
-/** @param {{ shots: Array<{ src: string, label?: string }>, intervalMs?: number, variant?: 'phone' | 'browser' }} props */
+/** @param {{ shots: Array<{ src: string, label?: string }>, intervalMs?: number, variant?: 'phone' | 'browser', browserTitle?: string }} props */
 export function ProjectPhoneSlideshow({
   shots,
   intervalMs = DEFAULT_INTERVAL_MS,
   variant = 'phone',
+  browserTitle = 'Web app',
 }) {
   const wrapRef = useRef(null)
   const isInView = useInView(wrapRef, { amount: 0.2, margin: '-60px' })
@@ -224,7 +225,7 @@ export function ProjectPhoneSlideshow({
               <span className="project-browser__traffic-dot" />
               <span className="project-browser__traffic-dot" />
             </span>
-            <div className="project-browser__url">SWM Dashboard Monitor</div>
+            <div className="project-browser__url">{browserTitle}</div>
           </div>
           <div className="project-browser__viewport">{slide}</div>
         </div>

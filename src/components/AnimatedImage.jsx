@@ -22,12 +22,7 @@ export function AnimatedImage({
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
     >
-      <motion.img
-        src={src}
-        alt={alt}
-        className={imgClassName}
-        loading="lazy"
-        decoding="async"
+      <motion.div
         animate={
           reduce || !float
             ? undefined
@@ -38,8 +33,16 @@ export function AnimatedImage({
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        {...imgProps}
-      />
+      >
+        <img
+          src={src}
+          alt={alt}
+          className={imgClassName}
+          loading="lazy"
+          decoding="async"
+          {...imgProps}
+        />
+      </motion.div>
     </motion.div>
   )
 }

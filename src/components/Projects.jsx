@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { projects } from '../data/content'
 import imgEcommerce from '../assets/project-ecommerce.svg'
-import imgVlabs from '../assets/project-vlabs.svg'
+import imgPortfolio from '../assets/project-portfolio.svg'
 import imgTrackiza from '../assets/project-trackiza.svg'
 import { ProjectPhoneSlideshow } from './ProjectPhoneSlideshow'
 import { SectionHeading } from './SectionHeading'
@@ -9,7 +9,7 @@ import { SectionHeading } from './SectionHeading'
 const projectImages = {
   trackiza: imgTrackiza,
   'authentic-papad': imgEcommerce,
-  'vlabs-simulation': imgVlabs,
+  'personal-portfolio': imgPortfolio,
 }
 
 function ProjectMedia({ project, src, mediaClass }) {
@@ -23,6 +23,7 @@ function ProjectMedia({ project, src, mediaClass }) {
         shots={shots}
         intervalMs={project.screenshotIntervalMs}
         variant={previewVariant}
+        browserTitle={project.browserTitle}
       />
     )
   }

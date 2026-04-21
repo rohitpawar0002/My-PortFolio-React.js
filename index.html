@@ -9,6 +9,15 @@
       content="Rohit Pawar — Angular & full-stack developer. Portfolio: dashboards, Ionic apps, Node.js APIs, Pune."
     />
     <title>Rohit Pawar — Portfolio</title>
+    <script>
+      ;(function () {
+        try {
+          var t = localStorage.getItem('portfolio-theme')
+          if (t === 'light' || t === 'dark')
+            document.documentElement.setAttribute('data-theme', t)
+        } catch (e) {}
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

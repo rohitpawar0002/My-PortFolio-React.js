@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@500;600;700&display=swap');
 
 :root {
+  color-scheme: dark;
   --bg-deep: #07080d;
   --bg: #0c0e14;
   --bg-elevated: #12151e;
@@ -14,6 +15,37 @@
   --font-sans: 'DM Sans', system-ui, sans-serif;
   --font-display: 'Outfit', var(--font-sans);
 
+  --nav-bg: rgba(7, 8, 13, 0.72);
+  --media-well: #07080d;
+  --timeline-note-bg: rgba(0, 0, 0, 0.25);
+  --lightbox-backdrop: rgba(4, 6, 12, 0.88);
+  --lightbox-ui-bg: rgba(255, 255, 255, 0.12);
+  --lightbox-ui-bg-hover: rgba(255, 255, 255, 0.2);
+  --lightbox-ui-border: rgba(255, 255, 255, 0.2);
+  --lightbox-ui-border-soft: rgba(255, 255, 255, 0.18);
+  --lightbox-nav-bg: rgba(255, 255, 255, 0.08);
+  --lightbox-img-ring: rgba(255, 255, 255, 0.08);
+  --shadow-card: rgba(0, 0, 0, 0.35);
+  --shadow-soft: rgba(0, 0, 0, 0.35);
+  --hero-grid-line: rgba(56, 189, 248, 0.04);
+  --hero-glow-1: rgba(56, 189, 248, 0.35);
+  --hero-glow-2: rgba(167, 139, 250, 0.3);
+  --hero-dashboard-shadow: 0 28px 56px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(56, 189, 248, 0.15);
+  --hero-title-1: #f8fafc;
+  --hero-title-2: #94a3b8;
+  --hero-title-3: #38bdf8;
+  --hero-fallback-1: #1e293b;
+  --hero-fallback-2: #0c0e14;
+  --contact-fade: rgba(56, 189, 248, 0.04);
+  --shine-stop: rgba(255, 255, 255, 0.06);
+  --role-accent: #22d3ee;
+  --role-accent-glow: rgba(34, 211, 238, 0.35);
+  --social-border: rgba(34, 211, 238, 0.55);
+  --social-bg: rgba(34, 211, 238, 0.06);
+  --social-bg-hover: rgba(34, 211, 238, 0.15);
+  --social-hover-fg: #e0f2fe;
+
   font-family: var(--font-sans);
   font-size: 17px;
   line-height: 1.55;
@@ -23,6 +55,51 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --bg-deep: #f1f4fb;
+  --bg: #ffffff;
+  --bg-elevated: #f1f5f9;
+  --border: rgba(15, 23, 42, 0.12);
+  --text: #475569;
+  --text-bright: #0f172a;
+  --accent: #0284c7;
+  --accent-dim: rgba(2, 132, 199, 0.12);
+  --accent-glow: rgba(2, 132, 199, 0.35);
+  --violet: #6d28d9;
+
+  --nav-bg: rgba(255, 255, 255, 0.92);
+  --media-well: #e2e8f0;
+  --timeline-note-bg: rgba(15, 23, 42, 0.06);
+  --lightbox-backdrop: rgba(241, 245, 249, 0.94);
+  --lightbox-ui-bg: rgba(15, 23, 42, 0.08);
+  --lightbox-ui-bg-hover: rgba(15, 23, 42, 0.12);
+  --lightbox-ui-border: rgba(15, 23, 42, 0.18);
+  --lightbox-ui-border-soft: rgba(15, 23, 42, 0.14);
+  --lightbox-nav-bg: rgba(15, 23, 42, 0.06);
+  --lightbox-img-ring: rgba(15, 23, 42, 0.1);
+  --shadow-card: rgba(15, 23, 42, 0.12);
+  --shadow-soft: rgba(15, 23, 42, 0.08);
+  --hero-grid-line: rgba(2, 132, 199, 0.08);
+  --hero-glow-1: rgba(2, 132, 199, 0.22);
+  --hero-glow-2: rgba(109, 40, 217, 0.16);
+  --hero-dashboard-shadow: 0 24px 48px rgba(15, 23, 42, 0.08),
+    0 0 0 1px rgba(15, 23, 42, 0.06);
+  --hero-title-1: #0f172a;
+  --hero-title-2: #334155;
+  --hero-title-3: #0284c7;
+  --hero-fallback-1: #e0f2fe;
+  --hero-fallback-2: #bae6fd;
+  --contact-fade: rgba(2, 132, 199, 0.07);
+  --shine-stop: rgba(255, 255, 255, 0.65);
+  --role-accent: #0284c7;
+  --role-accent-glow: rgba(2, 132, 199, 0.28);
+  --social-border: rgba(2, 132, 199, 0.45);
+  --social-bg: rgba(2, 132, 199, 0.08);
+  --social-bg-hover: rgba(2, 132, 199, 0.14);
+  --social-hover-fg: #0c4a6e;
 }
 
 *,

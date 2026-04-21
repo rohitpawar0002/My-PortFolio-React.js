@@ -40,6 +40,17 @@ export function Contact() {
           or remote.
         </p>
         <div className="contact__links">
+          {profile.resumeUrl ? (
+            <motion.a
+              className="contact__link"
+              href={profile.resumeUrl}
+              download={profile.resumeDownloadName}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Download resume (PDF)
+            </motion.a>
+          ) : null}
           <motion.a
             className="contact__link"
             href={`mailto:${profile.email}`}

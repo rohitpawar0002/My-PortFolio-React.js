@@ -1,15 +1,17 @@
 import { motion } from 'framer-motion'
 import { experience } from '../data/content'
-import experienceMap from '../assets/experience-map.svg'
 import { AnimatedImage } from './AnimatedImage'
 import { SectionHeading } from './SectionHeading'
+
+/** Served from `public/` — stable URL on static hosts; works with plain `<img>`. */
+const EXPERIENCE_MAP_SRC = `${import.meta.env.BASE_URL}experience-map.svg`
 
 export function Experience() {
   return (
     <section className="section" id="experience" aria-labelledby="exp-title">
       <SectionHeading eyebrow="Career" title="Experience" titleId="exp-title" />
       <AnimatedImage
-        src={experienceMap}
+        src={EXPERIENCE_MAP_SRC}
         alt=""
         className="experience__banner"
         imgClassName="experience__banner-img"
