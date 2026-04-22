@@ -37,7 +37,7 @@ export function Chatbot() {
     {
       id: 'welcome',
       role: 'assistant',
-      text: `Hi! I'm the assistant for ${profile.name}. Ask me about his experience, projects like **${projects[0]?.name?.split('—')[0]?.trim() || 'Trackiza'}**, or how to connect.`,
+      text: `Hi! I'm ${profile.name.split(' ')[0]}'s site assistant — ask about his work, **${projects[0]?.name?.split('—')[0]?.trim() || 'Trackiza'}**, contact, or anything else (general questions are fine too).`,
     },
   ])
   const listRef = useRef(null)

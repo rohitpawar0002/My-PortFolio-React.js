@@ -2,7 +2,17 @@
  * Serverless: Google Gemini (portfolio assistant for Rohit Pawar).
  * Set GEMINI_API_KEY in Netlify → Site → Environment variables.
  *
- * Note: `gemini-1.5-flash` and other 1.5 aliases have been shut down for many keys — use 2.x models.
+ * --- Free tier / $0 (your responsibility) ---
+ * - Use an API key from **Google AI Studio** (aistudio.google.com) for the **Gemini API** (this code calls
+ *   `generativelanguage.googleapis.com`). That path is the usual free, rate-limited tier for individuals.
+ * - **Do not** switch to Vertex AI / a Google Cloud project with **billing** enabled for paid generative
+ *   products unless you intend to pay. This repo cannot enforce billing; only Google can.
+ * - In Google’s admin / AI Studio, **do not** upgrade to paid products for this key if you want $0.
+ * - Google’s policies and which models are “free” can change — check periodically:
+ *   https://ai.google.dev/gemini-api/docs and https://ai.google.dev/gemini-api/docs/pricing
+ * - `GEMINI_MODEL` is optional; defaults are Flash / Flash-Lite only (we reject obvious “Pro” model IDs
+ *   below to reduce accidental paid-tier usage; Pro may still be billable on some projects).
+ *
  * @see https://ai.google.dev/gemini-api/docs/deprecations
  */
 /** CORS: include headers browsers send on preflight (content-type, accept, etc.). */
@@ -25,10 +35,31 @@ const DEFAULT_MODEL_FALLBACKS = [
   'gemini-2.5-flash-lite',
 ]
 
+/**
+ * Reject model IDs that look like Pro / Ultra (typical paid tiers). Only Flash- / Flash-Lite–style IDs
+ * are accepted for GEMINI_MODEL. This does not replace Google’s billing; it just blocks obvious mistakes.
+ */
+function isAllowedFreeStyleModelId(model) {
+  const s = String(model || '')
+    .toLowerCase()
+    .trim()
+  if (!s.startsWith('gemini-')) return false
+  if (/-(pro|ultra)(-|$)/.test(s) && !/flash|lite/i.test(s)) return false
+  return /flash|flash-lite|lite|embedding/i.test(s)
+}
+
 function getModelList() {
   const env = process.env.GEMINI_MODEL?.trim()
-  if (env) return [env]
-  return DEFAULT_MODEL_FALLBACKS
+  if (env) {
+    if (!isAllowedFreeStyleModelId(env)) {
+      return {
+        error:
+          'This chat is limited to Flash / Flash-Lite (or similar) model IDs. Unset GEMINI_MODEL to use the defaults, or set e.g. gemini-2.5-flash. See the top of netlify/functions/chat.js.',
+      }
+    }
+    return { models: [env] }
+  }
+  return { models: DEFAULT_MODEL_FALLBACKS }
 }
 
 function geminiUrl(model, key) {
@@ -39,6 +70,18 @@ function isQuotaError(message, status) {
   if (status === 429) return true
   const t = String(message || '')
   return /quota|rate limit|RESOURCE_EXHAUSTED|exceeded your current/i.test(t)
+}
+
+/**
+ * Google busy / capacity — retry next model, or return HTTP 200 with a kind message (not 502), so
+ * Vite on localhost and the network tab do not show "Bad Gateway" for a temporary API issue.
+ */
+function isTransientOverload(message, status) {
+  if (status === 503) return true
+  const t = String(message || '')
+  return /high demand|spikes in demand|UNAVAILABLE|overloaded|try again later|The model is currently|temporar(y|ily) unavailable|capacity issues|Deadline exceeded|deadline exceeded|too many requests|503|model is currently experiencing/i.test(
+    t,
+  )
 }
 
 function isModelUnavailable(message, status) {
@@ -59,16 +102,15 @@ function extractApiError(data, res) {
   )
 }
 
-const SYSTEM_INSTRUCTION = `You are a friendly, professional portfolio assistant for Rohit Pawar, a software developer in Pune, India. You answer visitors' questions about Rohit's background, skills, work experience, projects, education, and how to get in touch.
+const SYSTEM_INSTRUCTION = `You are the chat widget on Rohit Pawar's portfolio website, powered by Google Gemini. You behave like a normal helpful AI: answer general questions (ideas, short writing, coding tips, life hacks, etc.) clearly and in a friendly tone.
 
-Rules:
-- Speak in first person as if helping Rohit ("he" for Rohit, you are the assistant on his site).
-- Be concise but helpful; use short paragraphs or bullet points when appropriate.
-- Only discuss Rohit and his career/portfolio. If asked something unrelated, politely steer back to his professional profile.
-- If you do not have a fact in the context below, say you are not sure and suggest checking the site sections or contact details — do not invent credentials or employer claims.
-- For contact, share only what is listed: email, phone, LinkedIn when relevant to the question.
+**Portfolio mode:** When the user asks about Rohit, his work, his résumé, projects, how to hire him, contact info, or his tech stack, use the facts in the "About Rohit" section below. Refer to him as "Rohit" (third person). You are the site's assistant, not Rohit himself.
 
-About Rohit (facts you may use):
+**Accuracy:** For anything specific about Rohit's employment, companies, or credentials, stick to what is written below. Do not invent job titles, dates, or projects. If something is not in the context, say you are not sure and suggest the About/Projects/Contact sections of the site.
+
+**Safety:** Do not help with anything illegal, harmful, or that violates clear safety policies. For contact details, use only the email, phone, and LinkedIn listed below when relevant.
+
+**About Rohit (facts to use for portfolio / career questions):**
 - Name: Rohit Pawar. Role: Software Developer. Location: Pune, India.
 - Focus: real-time dashboards, GPS tracking mobile apps, REST APIs. Stack emphasis: Angular, React.js, Ionic, TypeScript, Node.js, Express.js, MS SQL, Google Maps, Capacitor, Bootstrap, HTML/CSS/SCSS, GitLab, Postman, Cursor AI.
 - Summary: builds component-driven UIs, responsive layouts, API integration, maps/location features; this portfolio is React + Vite + Framer Motion.
@@ -152,7 +194,11 @@ export async function handler(event) {
   const contents = [...history, { role: 'user', parts: [{ text: message }] }]
   const body = JSON.stringify(buildRequestBody(contents))
 
-  const models = getModelList()
+  const listResult = getModelList()
+  if (listResult.error) {
+    return jsonResponse(400, { error: listResult.error })
+  }
+  const { models } = listResult
   let lastErr = 'No response from any model'
 
   try {
@@ -171,14 +217,32 @@ export async function handler(event) {
         const errMsg = extractApiError(data, res)
         lastErr = errMsg
 
+        if (res.status === 429 && i < models.length - 1) {
+          continue
+        }
+        if (
+          (isModelUnavailable(errMsg, res.status) || isTransientOverload(errMsg, res.status)) &&
+          i < models.length - 1
+        ) {
+          continue
+        }
+        if (isTransientOverload(errMsg, res.status)) {
+          return jsonResponse(200, {
+            reply:
+              "The AI service is very busy right now. Please try again in a few seconds — or use **About**, **Projects**, and **Contact** on this page for the same information without the AI.",
+          })
+        }
         if (isQuotaError(errMsg, res.status)) {
           return jsonResponse(200, {
             reply:
-              "The AI service hit a free-tier limit (or is cooling down). Please try again in a minute. You can also read Rohit's **About**, **Projects**, and **Contact** sections on this page for the same information.",
+              "The AI service hit a usage limit. Please try again in a little while. You can also read Rohit's **About**, **Projects**, and **Contact** sections for the same details.",
           })
         }
-        if (isModelUnavailable(errMsg, res.status) && i < models.length - 1) {
-          continue
+        if (isModelUnavailable(errMsg, res.status)) {
+          return jsonResponse(200, {
+            reply:
+              'This AI model is not available for your API key. In Netlify, the owner can set `GEMINI_MODEL` to a model from Google AI Studio (List models).',
+          })
         }
         return jsonResponse(502, { error: errMsg, details: data?.error, model })
       }

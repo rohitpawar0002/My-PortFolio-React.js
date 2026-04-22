@@ -18,6 +18,9 @@ export default defineConfig(({ mode }) => {
           target: chatProxy,
           changeOrigin: true,
           secure: true,
+          /** Avoid proxy 502 when Gemini/Netlify is slow (ms). */
+          timeout: 120_000,
+          proxyTimeout: 120_000,
           rewrite: (path) =>
             path.replace(/^\/api\/chat$/, '/.netlify/functions/chat'),
         },
