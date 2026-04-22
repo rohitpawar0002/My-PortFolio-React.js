@@ -1,6 +1,9 @@
 /**
  * Serverless: Google Gemini (portfolio assistant for Rohit Pawar).
  * Set GEMINI_API_KEY in Netlify → Site → Environment variables.
+ *
+ * Note: `gemini-1.5-flash` and other 1.5 aliases have been shut down for many keys — use 2.x models.
+ * @see https://ai.google.dev/gemini-api/docs/deprecations
  */
 /** CORS: include headers browsers send on preflight (content-type, accept, etc.). */
 const CORS = {
@@ -13,16 +16,47 @@ const CORS = {
 }
 
 /**
- * Free tier: `gemini-2.0-flash` often hits quota:0 for free API keys. Default to 1.5 Flash.
- * Override in Netlify env: `GEMINI_MODEL=gemini-2.0-flash` (when your key has quota).
+ * Single model: set `GEMINI_MODEL=gemini-2.5-flash` (no fallback).
+ * If unset, we try these in order until one works (not found → try next).
  */
-const MODEL = process.env.GEMINI_MODEL || 'gemini-1.5-flash'
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`
+const DEFAULT_MODEL_FALLBACKS = [
+  'gemini-2.5-flash',
+  'gemini-2.0-flash',
+  'gemini-2.5-flash-lite',
+]
+
+function getModelList() {
+  const env = process.env.GEMINI_MODEL?.trim()
+  if (env) return [env]
+  return DEFAULT_MODEL_FALLBACKS
+}
+
+function geminiUrl(model, key) {
+  return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`
+}
 
 function isQuotaError(message, status) {
   if (status === 429) return true
   const t = String(message || '')
   return /quota|rate limit|RESOURCE_EXHAUSTED|exceeded your current/i.test(t)
+}
+
+function isModelUnavailable(message, status) {
+  if (status === 404) return true
+  const t = String(message || '')
+  return /not found for API version|is not supported for generateContent|Call ListModels|was not found/i.test(
+    t,
+  )
+}
+
+function extractApiError(data, res) {
+  return (
+    (typeof data?.error === 'object' && data.error?.message) ||
+    (typeof data?.error === 'string' ? data.error : null) ||
+    data?.message ||
+    res.statusText ||
+    'Gemini request failed'
+  )
 }
 
 const SYSTEM_INSTRUCTION = `You are a friendly, professional portfolio assistant for Rohit Pawar, a software developer in Pune, India. You answer visitors' questions about Rohit's background, skills, work experience, projects, education, and how to get in touch.
@@ -73,6 +107,19 @@ function toGeminiContents(history) {
     }))
 }
 
+function buildRequestBody(contents) {
+  return {
+    systemInstruction: {
+      parts: [{ text: SYSTEM_INSTRUCTION }],
+    },
+    contents,
+    generationConfig: {
+      temperature: 0.65,
+      maxOutputTokens: 1024,
+    },
+  }
+}
+
 export async function handler(event) {
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 204, headers: CORS, body: '' }
@@ -103,57 +150,61 @@ export async function handler(event) {
 
   const history = toGeminiContents(payload.history)
   const contents = [...history, { role: 'user', parts: [{ text: message }] }]
+  const body = JSON.stringify(buildRequestBody(contents))
+
+  const models = getModelList()
+  let lastErr = 'No response from any model'
 
   try {
-    const res = await fetch(`${API_URL}?key=${encodeURIComponent(key)}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        systemInstruction: {
-          parts: [{ text: SYSTEM_INSTRUCTION }],
-        },
-        contents,
-        generationConfig: {
-          temperature: 0.65,
-          maxOutputTokens: 1024,
-        },
-      }),
-    })
+    for (let i = 0; i < models.length; i++) {
+      const model = models[i]
+      const res = await fetch(geminiUrl(model, key), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+      })
 
-    const data = await res.json()
-    const topLevelError = data?.error && !data.candidates
-    if (!res.ok || topLevelError) {
-      const errMsg =
-        (typeof data?.error === 'object' && data.error?.message) ||
-        (typeof data?.error === 'string' ? data.error : null) ||
-        data?.message ||
-        res.statusText ||
-        'Gemini request failed'
-      if (isQuotaError(errMsg, res.status)) {
+      const data = await res.json()
+      const topLevelError = data?.error && !data.candidates
+
+      if (!res.ok || topLevelError) {
+        const errMsg = extractApiError(data, res)
+        lastErr = errMsg
+
+        if (isQuotaError(errMsg, res.status)) {
+          return jsonResponse(200, {
+            reply:
+              "The AI service hit a free-tier limit (or is cooling down). Please try again in a minute. You can also read Rohit's **About**, **Projects**, and **Contact** sections on this page for the same information.",
+          })
+        }
+        if (isModelUnavailable(errMsg, res.status) && i < models.length - 1) {
+          continue
+        }
+        return jsonResponse(502, { error: errMsg, details: data?.error, model })
+      }
+
+      const text =
+        data.candidates?.[0]?.content?.parts?.[0]?.text ||
+        (data.candidates?.[0]?.finishReason === 'SAFETY'
+          ? "I couldn't return that response. Please ask in a different way or browse the About and Projects sections on the site."
+          : null)
+
+      if (!text) {
+        const block = data.candidates?.[0]?.safetyRatings
         return jsonResponse(200, {
-          reply:
-            "The AI service hit a free-tier limit (or is cooling down). Please try again in a minute. You can also read Rohit's **About**, **Projects**, and **Contact** sections on this page for the same information.",
+          reply: block
+            ? 'The reply was blocked by safety settings. Try rephrasing your question.'
+            : 'No response from the model. Please try again.',
         })
       }
-      return jsonResponse(502, { error: errMsg, details: data?.error })
+
+      return jsonResponse(200, { reply: text })
     }
 
-    const text =
-      data.candidates?.[0]?.content?.parts?.[0]?.text ||
-      (data.candidates?.[0]?.finishReason === 'SAFETY'
-        ? "I couldn't return that response. Please ask in a different way or browse the About and Projects sections on the site."
-        : null)
-
-    if (!text) {
-      const block = data.candidates?.[0]?.safetyRatings
-      return jsonResponse(200, {
-        reply: block
-          ? 'The reply was blocked by safety settings. Try rephrasing your question.'
-          : 'No response from the model. Please try again.',
-      })
-    }
-
-    return jsonResponse(200, { reply: text })
+    return jsonResponse(502, {
+      error: lastErr,
+      hint: 'Set GEMINI_MODEL in Netlify to a model your API key can use (see Google AI / ListModels).',
+    })
   } catch (err) {
     return jsonResponse(500, {
       error: err?.message || 'Unexpected server error',
