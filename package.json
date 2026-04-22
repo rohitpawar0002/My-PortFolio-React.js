@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "predev": "node scripts/inline-favicon.mjs",
+    "prebuild": "node scripts/inline-favicon.mjs",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"

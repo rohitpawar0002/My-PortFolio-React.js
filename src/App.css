@@ -18,6 +18,21 @@
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* Page scroll → accent bar grows left-to-right (see Navbar useScroll + motion). */
+.nav__scroll-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(90deg, var(--accent), var(--violet));
+  border-radius: 0 0.12rem 0.12rem 0;
+  will-change: transform;
 }
 
 .nav__end {
@@ -1006,6 +1021,11 @@ main {
   overflow: hidden;
 }
 
+/* Allow the draggable phone mockup to move without clipping (see ProjectPhoneSlideshow). */
+.project-card:has(.project-card__media--device) {
+  overflow: visible;
+}
+
 .project-card__layout {
   display: grid;
   grid-template-columns: 1fr;
@@ -1104,6 +1124,7 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  overflow: visible;
 }
 
 /* Angular web dashboard — browser chrome + rotating screenshots */
@@ -1340,6 +1361,8 @@ main {
 }
 
 .project-device {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;

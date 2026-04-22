@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion, useScroll } from 'framer-motion'
 import { createPortal } from 'react-dom'
 import { useEffect, useRef, useState } from 'react'
 import { navLinks, profile } from '../data/content'
@@ -117,6 +117,7 @@ export function Navbar({ theme, onToggleTheme }) {
   const closeMenu = () => setMenuOpen(false)
   const toggleMenu = () => setMenuOpen((o) => !o)
 
+  const { scrollYProgress } = useScroll()
   return (
     <motion.header
       ref={headerRef}
@@ -212,6 +213,14 @@ export function Navbar({ theme, onToggleTheme }) {
           </div>,
           document.body,
         )}
+      <motion.div
+        className="nav__scroll-line"
+        aria-hidden
+        style={{
+          scaleX: scrollYProgress,
+          transformOrigin: '0% 50%',
+        }}
+      />
     </motion.header>
   )
 }

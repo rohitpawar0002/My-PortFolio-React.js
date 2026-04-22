@@ -118,9 +118,12 @@ export function Projects() {
                 </div>
                 <div className="project-card__col project-card__col--media">
                   <ProjectMedia
+                  
                     project={project}
                     src={src}
                     mediaClass={mediaClass}
+                    
+                    
                   />
                 </div>
               </div>
