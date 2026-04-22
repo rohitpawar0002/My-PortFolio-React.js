@@ -12,9 +12,18 @@ const CORS = {
   Vary: 'Origin',
 }
 
-/** Override in Netlify: e.g. gemini-1.5-flash if your key prefers the 1.5 line */
-const MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash'
+/**
+ * Free tier: `gemini-2.0-flash` often hits quota:0 for free API keys. Default to 1.5 Flash.
+ * Override in Netlify env: `GEMINI_MODEL=gemini-2.0-flash` (when your key has quota).
+ */
+const MODEL = process.env.GEMINI_MODEL || 'gemini-1.5-flash'
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`
+
+function isQuotaError(message, status) {
+  if (status === 429) return true
+  const t = String(message || '')
+  return /quota|rate limit|RESOURCE_EXHAUSTED|exceeded your current/i.test(t)
+}
 
 const SYSTEM_INSTRUCTION = `You are a friendly, professional portfolio assistant for Rohit Pawar, a software developer in Pune, India. You answer visitors' questions about Rohit's background, skills, work experience, projects, education, and how to get in touch.
 
@@ -112,10 +121,20 @@ export async function handler(event) {
     })
 
     const data = await res.json()
-
-    if (!res.ok) {
+    const topLevelError = data?.error && !data.candidates
+    if (!res.ok || topLevelError) {
       const errMsg =
-        data?.error?.message || data?.message || res.statusText || 'Gemini request failed'
+        (typeof data?.error === 'object' && data.error?.message) ||
+        (typeof data?.error === 'string' ? data.error : null) ||
+        data?.message ||
+        res.statusText ||
+        'Gemini request failed'
+      if (isQuotaError(errMsg, res.status)) {
+        return jsonResponse(200, {
+          reply:
+            "The AI service hit a free-tier limit (or is cooling down). Please try again in a minute. You can also read Rohit's **About**, **Projects**, and **Contact** sections on this page for the same information.",
+        })
+      }
       return jsonResponse(502, { error: errMsg, details: data?.error })
     }
 
