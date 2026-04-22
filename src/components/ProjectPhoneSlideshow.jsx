@@ -230,7 +230,7 @@ export function ProjectPhoneSlideshow({
           <div className="project-browser__viewport">{slide}</div>
         </div>
       ) : (
-        <motion.div drag className="project-device project-device--iphone16-pro">
+        <motion.div className="project-device project-device--iphone16-pro">
           <div className="project-device__bezel">
             <div className="project-device__screen">{slide}</div>
           </div>
