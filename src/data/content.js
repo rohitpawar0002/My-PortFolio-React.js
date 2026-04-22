@@ -1,7 +1,7 @@
 /** Portfolio content sourced from resume */
 
 export const profile = {
-  name: 'Rohitt Pawar',
+  name: 'Rohit Pawar',
   title: 'Software Developer',
   /** Hero intro line (reference-style greeting). */
   greeting: "Hello, it's me",
