@@ -5,7 +5,7 @@ import { AnimatedImage } from './AnimatedImage'
 import { SectionHeading } from './SectionHeading'
 
 export function Skills() {
-  return (
+  return (    
     <section className="section" id="skills" aria-labelledby="skills-title">
       <SectionHeading
         eyebrow="Toolkit"
