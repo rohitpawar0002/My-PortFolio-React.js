@@ -8,6 +8,7 @@ import { Experience } from './components/Experience'
 import { Projects } from './components/Projects'
 import { Education } from './components/Education'
 import { Contact } from './components/Contact'
+import { Chatbot } from './components/Chatbot'
 
 const THEME_KEY = 'portfolio-theme'
 
@@ -45,6 +46,7 @@ function App() {
         <Education />
         <Contact />
       </main>
+      <Chatbot />
     </div>
   )
 }

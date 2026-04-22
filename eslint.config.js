@@ -29,4 +29,10 @@ export default defineConfig([
       ],
     },
   },
+  {
+    files: ['netlify/functions/**/*.js', 'vite.config.js'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
 ])
