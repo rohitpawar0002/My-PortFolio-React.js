@@ -8,7 +8,7 @@ export const profile = {
   /** Shown before the highlighted role, e.g. "And I'm an". */
   roleLeadIn: "And I'm an",
   tagline:
-    'Building real-time dashboards, GPS tracking mobile apps, and scalable REST APIs with Angular, React.js, Ionic, Node.js, and MS SQL.',
+    'Real-time Angular dashboards, Ionic/Capacitor GPS apps, Node.js/MS SQL APIs, and a React portfolio with a Gemini API chatbot, serverless backend, and CI/CD (GitHub → Netlify).',
   location: 'Pune, India',
   phone: '+91 9730023006',
   email: 'rohitt.pawar02@gmail.com',
@@ -23,9 +23,9 @@ export const profile = {
 }
 
 export const summary = [
-  'Angular and React.js developer: real-time dashboards, GPS tracking mobile apps (Ionic / Capacitor), and scalable REST APIs with Angular, TypeScript, React, Node.js, and MS SQL.',
-  'Comfortable shipping component-driven UIs in React — this portfolio is built with React and Vite (Framer Motion) — and using Cursor AI to refine components, motion, and performance.',
-  'Strong at responsive layouts, API integration, and maps or location features across Angular and React. I enjoy collaborating with teams to deliver maintainable, production-ready software.',
+  'Software developer with experience in real-time dashboards, GPS tracking mobile applications (Ionic/Capacitor), and scalable REST APIs using Angular, React, TypeScript, Ionic, Node.js, and MS SQL.',
+  'Built and deployed this portfolio (React, Vite, Framer Motion) at rohitt-portfolio-react.netlify.app: AI chatbot powered by the Google Gemini API with a serverless backend, plus CI/CD from GitHub to Netlify. I use Cursor AI to accelerate feature delivery, refine React components, and improve performance.',
+  'Skilled in responsive UIs, third-party API integration, and location-based applications, working with cross-functional teams to ship scalable, high-performance software.',
 ]
 
 export const skills = [
@@ -96,9 +96,15 @@ export const projects = [
     playStoreUrl:
       'https://play.google.com/store/apps/details?id=com.ionic.trackzia&hl=en',
     /** Milliseconds between slides in the phone preview (Ionic app gallery). */
-    screenshotIntervalMs: 3500,
-    /** Real device screenshots — files in `public/trackiza/`, copied to `dist/` on build. */
+    screenshotIntervalMs: 8000,
+    /** Files in `public/trackiza/`. First slide: phone screen recording + poster frame. */
     screenshots: [
+      {
+        src: '/trackiza/00-home-map.mp4',
+        poster: '/trackiza/00-home-map-poster.png',
+        label: 'Home — map, geofence & vehicle (screen recording)',
+        video: true,
+      },
       { src: '/trackiza/01-login.png', label: 'Login' },
       { src: '/trackiza/02-otp.png', label: 'OTP' },
       { src: '/trackiza/03-dashboard.png', label: 'Home / map' },
@@ -130,8 +136,13 @@ export const projects = [
     ],
     previewVariant: 'browser',
     browserTitle: 'SWM Dashboard Monitor',
-    screenshotIntervalMs: 4000,
+    screenshotIntervalMs: 9000,
     screenshots: [
+      {
+        src: '/swm/00-overview-recording.mp4',
+        label: 'Dashboard walkthrough (screen recording)',
+        video: true,
+      },
       { src: '/swm/01-overview.png', label: 'Fleet & route KPIs' },
       { src: '/swm/02-coverage-charts.png', label: 'Zone & hourly coverage' },
       { src: '/swm/03-route-map.png', label: 'Live route map & playback' },

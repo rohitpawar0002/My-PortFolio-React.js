@@ -4,7 +4,13 @@ import { createPortal } from 'react-dom'
 
 const DEFAULT_INTERVAL_MS = 3500
 
-/** @param {{ shots: Array<{ src: string, label?: string }>, intervalMs?: number, variant?: 'phone' | 'browser', browserTitle?: string }} props */
+function isVideoShot(s) {
+  if (!s || !s.src) return false
+  if (s.video === true) return true
+  return /\.(mp4|webm|ogg)(\?|$)/i.test(s.src)
+}
+
+/** @param {{ shots: Array<{ src: string, label?: string, video?: boolean, poster?: string }>, intervalMs?: number, variant?: 'phone' | 'browser', browserTitle?: string }} props */
 export function ProjectPhoneSlideshow({
   shots,
   intervalMs = DEFAULT_INTERVAL_MS,
@@ -12,6 +18,7 @@ export function ProjectPhoneSlideshow({
   browserTitle = 'Web app',
 }) {
   const wrapRef = useRef(null)
+  const videoRef = useRef(/** @type {HTMLVideoElement | null} */ (null))
   const isInView = useInView(wrapRef, { amount: 0.2, margin: '-60px' })
   const [index, setIndex] = useState(0)
   const [reduceMotion, setReduceMotion] = useState(false)
@@ -38,6 +45,16 @@ export function ProjectPhoneSlideshow({
     }, intervalMs)
     return () => window.clearInterval(id)
   }, [n, reduceMotion, isInView, intervalMs])
+
+  useEffect(() => {
+    const el = videoRef.current
+    if (!el || !isVideoShot(current)) return
+    if (reduceMotion || !isInView) {
+      el.pause()
+    } else {
+      void el.play().catch(() => {})
+    }
+  }, [current, reduceMotion, isInView, safeIndex])
 
   useEffect(() => {
     if (lightboxIndex === null) return
@@ -111,28 +128,56 @@ export function ProjectPhoneSlideshow({
 
   const slide = (
     <AnimatePresence mode="wait" initial={false}>
-      <motion.img
-        key={current.src}
-        src={current.src}
-        alt={current.label || `Screen ${safeIndex + 1}`}
-        className={shotClass}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: reduceMotion ? 0 : 0.38 }}
-        loading={safeIndex === 0 ? 'eager' : 'lazy'}
-        decoding="async"
-        onClick={openLightbox}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            openLightbox()
-          }
-        }}
-        tabIndex={0}
-        role="button"
-        aria-label={`View larger: ${current.label || `screen ${safeIndex + 1}`}`}
-      />
+      {isVideoShot(current) ? (
+        <motion.video
+          key={current.src}
+          ref={videoRef}
+          src={current.src}
+          poster={current.poster || undefined}
+          className={shotClass}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.38 }}
+          onClick={openLightbox}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              openLightbox()
+            }
+          }}
+          tabIndex={0}
+          role="button"
+          aria-label={`View larger: ${current.label || `screen ${safeIndex + 1}`}`}
+        />
+      ) : (
+        <motion.img
+          key={current.src}
+          src={current.src}
+          alt={current.label || `Screen ${safeIndex + 1}`}
+          className={shotClass}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.38 }}
+          loading={safeIndex === 0 ? 'eager' : 'lazy'}
+          decoding="async"
+          onClick={openLightbox}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              openLightbox()
+            }
+          }}
+          tabIndex={0}
+          role="button"
+          aria-label={`View larger: ${current.label || `screen ${safeIndex + 1}`}`}
+        />
+      )}
     </AnimatePresence>
   )
 
@@ -168,12 +213,23 @@ export function ProjectPhoneSlideshow({
           >
             ×
           </button>
-          <img
-            key={lbShot.src}
-            src={lbShot.src}
-            alt={lbLabel}
-            className="project-lightbox__img"
-          />
+          {isVideoShot(lbShot) ? (
+            <video
+              key={lbShot.src}
+              src={lbShot.src}
+              className="project-lightbox__img project-lightbox__video"
+              controls
+              playsInline
+              autoPlay
+            />
+          ) : (
+            <img
+              key={lbShot.src}
+              src={lbShot.src}
+              alt={lbLabel}
+              className="project-lightbox__img"
+            />
+          )}
           {lbLabel ? (
             <figcaption className="project-lightbox__caption">
               {lbLabel}

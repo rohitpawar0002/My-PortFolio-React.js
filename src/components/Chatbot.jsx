@@ -30,7 +30,7 @@ function buildHistory(msgs) {
 export function Chatbot() {
   const id = useId()
   const panelId = `${id}-panel`
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [messages, setMessages] = useState(() => [
@@ -42,6 +42,9 @@ export function Chatbot() {
   ])
   const listRef = useRef(null)
   const inputRef = useRef(null)
+  const suggestRef = useRef(null)
+  const [photoError, setPhotoError] = useState(false)
+  const [suggestOpen, setSuggestOpen] = useState(false)
 
   const scrollToEnd = useCallback(() => {
     const el = listRef.current
@@ -55,7 +58,10 @@ export function Chatbot() {
   }, [messages, open, scrollToEnd])
 
   useEffect(() => {
-    if (!open) return
+    if (!open) {
+      setSuggestOpen(false)
+      return
+    }
     const t = setTimeout(() => inputRef.current?.focus(), 200)
     return () => clearTimeout(t)
   }, [open])
@@ -63,14 +69,32 @@ export function Chatbot() {
   useEffect(() => {
     if (!open) return
     const onKey = (e) => {
-      if (e.key === 'Escape') setOpen(false)
+      if (e.key === 'Escape') {
+        if (suggestOpen) {
+          setSuggestOpen(false)
+        } else {
+          setOpen(false)
+        }
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [open])
+  }, [open, suggestOpen])
+
+  useEffect(() => {
+    if (!suggestOpen) return
+    const onDoc = (e) => {
+      if (suggestRef.current && !suggestRef.current.contains(e.target)) {
+        setSuggestOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', onDoc)
+    return () => document.removeEventListener('mousedown', onDoc)
+  }, [suggestOpen])
 
   const send = useCallback(
     async (raw) => {
+      debugger
       const text = (typeof raw === 'string' ? raw : input).trim()
       if (!text || loading) return
 
@@ -96,11 +120,13 @@ export function Chatbot() {
         if (!reply || typeof reply !== 'string') {
           throw new Error('No reply from assistant')
         }
+        debugger
         setMessages((prev) => [
           ...prev,
           { id: `a-${Date.now()}`, role: 'assistant', text: reply },
         ])
       } catch (e) {
+        debugger
         const hint =
           e?.message ||
           'Could not reach the assistant. If you are on `npm run dev` only, use `netlify dev` (or open the live site) so the chat API is available.'
@@ -123,21 +149,76 @@ export function Chatbot() {
     <div className="chatbot" aria-live="polite">
       <AnimatePresence>
         {open && (
+          <motion.button
+            type="button"
+            className="chatbot__backdrop"
+            aria-label="Close chat"
+            onClick={() => setOpen(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {open && (
           <motion.div
             className="chatbot__panel-wrap"
-            initial={{ opacity: 0, y: 16, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 12, scale: 0.96 }}
-            transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 12 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 34 }}
             id={panelId}
             role="dialog"
             aria-label="Chat with portfolio assistant"
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="chatbot__panel">
+              <div className="chatbot__panel-accent" aria-hidden />
               <header className="chatbot__head">
-                <div className="chatbot__head-text">
-                  <span className="chatbot__title">Ask about {profile.name.split(' ')[0]}</span>
-                  <span className="chatbot__subtitle">Powered by Google Gemini</span>
+                <div className="chatbot__head-brand">
+                  <div
+                    className={
+                      photoError
+                        ? 'chatbot__avatar chatbot__avatar--fallback'
+                        : 'chatbot__avatar chatbot__avatar--photo'
+                    }
+                    aria-hidden
+                  >
+                    {photoError ? (
+                      <span className="chatbot__avatar-fallback">
+                        {profile.name
+                          .split(' ')
+                          .map((n) => n[0])
+                          .join('')
+                          .slice(0, 2)
+                          .toUpperCase()}
+                      </span>
+                    ) : (
+                      <img
+                        className="chatbot__avatar-img"
+                        src={profile.photo}
+                        alt=""
+                        width={40}
+                        height={40}
+                        loading="lazy"
+                        decoding="async"
+                        onError={() => setPhotoError(true)}
+                      />
+                    )}
+                  </div>
+                  <div className="chatbot__head-text">
+                    <div className="chatbot__title-row">
+                      <span className="chatbot__title">Ask {profile.name.split(' ')[0]}</span>
+                      <span className="chatbot__status" title="Service online">
+                        <span className="chatbot__status-dot" />
+                        Online
+                      </span>
+                    </div>
+                    <span className="chatbot__subtitle">Portfolio, projects, and more</span>
+                  </div>
                 </div>
                 <button
                   type="button"
@@ -145,7 +226,7 @@ export function Chatbot() {
                   onClick={() => setOpen(false)}
                   aria-label="Close chat"
                 >
-                  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden>
                     <path
                       fill="currentColor"
                       d="M6.4 5.31L12 10.9l5.6-5.6 1.1 1.09L13.1 12l5.6 5.6-1.1 1.1L12 13.1l-5.6 5.6-1.1-1.1L10.9 12 5.3 6.4l1.1-1.09Z"
@@ -161,39 +242,114 @@ export function Chatbot() {
                       key={m.id}
                       className={
                         m.role === 'user'
-                          ? 'chatbot__msg chatbot__msg--user'
-                          : 'chatbot__msg chatbot__msg--bot'
+                          ? 'chatbot__row chatbot__row--user'
+                          : 'chatbot__row chatbot__row--bot'
                       }
                     >
-                      {m.text.split('\n').map((line, i, arr) => (
-                        <span key={i}>
-                          <MessageLine line={line} />
-                          {i < arr.length - 1 && <br />}
-                        </span>
-                      ))}
+                      {m.role === 'assistant' && (
+                        <div className="chatbot__bubble-avatar" aria-hidden>
+                          ✦
+                        </div>
+                      )}
+                      <div
+                        className={
+                          m.role === 'user'
+                            ? 'chatbot__msg chatbot__msg--user'
+                            : 'chatbot__msg chatbot__msg--bot'
+                        }
+                      >
+                        {m.text.split('\n').map((line, i, arr) => (
+                          <span key={i}>
+                            <MessageLine line={line} />
+                            {i < arr.length - 1 && <br />}
+                          </span>
+                        ))}
+                      </div>
                     </li>
                   ))}
                   {loading && (
-                    <li className="chatbot__msg chatbot__msg--bot chatbot__typing" aria-label="Assistant is typing">
-                      <span />
-                      <span />
-                      <span />
+                    <li className="chatbot__row chatbot__row--bot">
+                      <div className="chatbot__bubble-avatar" aria-hidden>
+                        ✦
+                      </div>
+                      <div
+                        className="chatbot__msg chatbot__msg--bot chatbot__typing"
+                        aria-label="Assistant is typing"
+                      >
+                        <span />
+                        <span />
+                        <span />
+                      </div>
                     </li>
                   )}
                 </ul>
 
-                <div className="chatbot__suggestions" aria-label="Suggested questions">
-                  {SUGGESTIONS.map((s) => (
+                <div
+                  className="chatbot__suggestions-wrap"
+                  ref={suggestRef}
+                >
+                  <div className="chatbot__suggest-dropdown">
                     <button
-                      key={s}
                       type="button"
-                      className="chatbot__chip"
-                      onClick={() => void send(s)}
+                      className="chatbot__suggest-trigger"
+                      id={`${id}-suggest-btn`}
+                      aria-expanded={suggestOpen}
+                      aria-controls={`${id}-suggest-list`}
+                      aria-haspopup="listbox"
                       disabled={loading}
+                      onClick={() => setSuggestOpen((v) => !v)}
                     >
-                      {s}
+                      <span className="chatbot__suggest-trigger-text">Quick questions</span>
+                      <svg
+                        className={
+                          suggestOpen
+                            ? 'chatbot__suggest-chev chatbot__suggest-chev--open'
+                            : 'chatbot__suggest-chev'
+                        }
+                        viewBox="0 0 24 24"
+                        width="18"
+                        height="18"
+                        aria-hidden
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M7 10l5 5 5-5H7z"
+                        />
+                      </svg>
                     </button>
-                  ))}
+
+                    <AnimatePresence>
+                      {suggestOpen && (
+                        <motion.ul
+                          className="chatbot__suggest-menu"
+                          id={`${id}-suggest-list`}
+                          role="listbox"
+                          aria-labelledby={`${id}-suggest-btn`}
+                          initial={{ opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 4 }}
+                          transition={{ duration: 0.16 }}
+                        >
+                          {SUGGESTIONS.map((s) => (
+                            <li key={s} role="presentation">
+                              <button
+                                type="button"
+                                className="chatbot__suggest-item"
+                                role="option"
+                                onClick={() => {
+                                  setSuggestOpen(false)
+                                  void send(s)
+                                }}
+                                disabled={loading}
+                              >
+                                {s}
+                              </button>
+                            </li>
+                          ))}
+                        </motion.ul>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
               </div>
 
@@ -204,33 +360,36 @@ export function Chatbot() {
                   void send()
                 }}
               >
-                <label htmlFor={`${id}-input`} className="visually-hidden">
-                  Message
-                </label>
-                <input
-                  id={`${id}-input`}
-                  ref={inputRef}
-                  className="chatbot__input"
-                  type="text"
-                  autoComplete="off"
-                  placeholder="Ask anything about Rohit…"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  disabled={loading}
-                />
-                <button
-                  type="submit"
-                  className="chatbot__send"
-                  disabled={loading || !input.trim()}
-                  aria-label="Send message"
-                >
-                  <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden>
-                    <path
-                      fill="currentColor"
-                      d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2.01L2.01 21Z"
-                    />
-                  </svg>
-                </button>
+                <div className="chatbot__compose">
+                  <label htmlFor={`${id}-input`} className="visually-hidden">
+                    Message
+                  </label>
+                  <input
+                    id={`${id}-input`}
+                    ref={inputRef}
+                    className="chatbot__input"
+                    type="text"
+                    autoComplete="off"
+                    placeholder="Type a message…"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    disabled={loading}
+                  />
+                  <button
+                    type="submit"
+                    className="chatbot__send"
+                    disabled={loading || !input.trim()}
+                    aria-label="Send message"
+                  >
+                    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden>
+                      <path
+                        fill="currentColor"
+                        d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2.01L2.01 21Z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <p className="chatbot__hint">Press Enter to send · Esc to close</p>
               </form>
             </div>
           </motion.div>
@@ -239,7 +398,7 @@ export function Chatbot() {
 
       <motion.button
         type="button"
-        className="chatbot__fab"
+        className={open ? 'chatbot__fab chatbot__fab--open' : 'chatbot__fab chatbot__fab--mascot'}
         onClick={() => {
           setOpen((o) => !o)
         }}
@@ -258,13 +417,15 @@ export function Chatbot() {
             />
           </svg>
         ) : (
-          <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden>
-            <path
-              fill="currentColor"
-              d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"
-            />
-            <path fill="currentColor" d="M7 9h2v2H7zm4 0h6v2h-6zm-4 3h2v2H7zm4 0h6v2h-6z" />
-          </svg>
+          <img
+            className="chatbot__fab-mascot"
+            src="/chatbot-robot.png"
+            alt=""
+            width={80}
+            height={80}
+            loading="eager"
+            decoding="async"
+          />
         )}
       </motion.button>
     </div>
