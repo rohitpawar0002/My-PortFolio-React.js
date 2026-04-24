@@ -1,4 +1,5 @@
-{
+{ 
+  "homepage": "https://rohitpawar0002.github.io/My-Portfolio-React.js",
   "name": "my-portfolio",
   "private": true,
   "version": "0.0.0",
@@ -7,6 +8,8 @@
     "dev": "vite",
     "predev": "node scripts/inline-favicon.mjs",
     "prebuild": "node scripts/inline-favicon.mjs",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -15,7 +18,7 @@
     "framer-motion": "^12.38.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
-  },    
+  },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
     "@tailwindcss/vite": "^4.2.4",
@@ -25,6 +28,7 @@
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
+    "gh-pages": "^6.3.0",
     "globals": "^17.5.0",
     "tailwindcss": "^4.2.4",
     "vite": "^8.0.9"
