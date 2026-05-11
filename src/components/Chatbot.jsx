@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { profile, projects } from '../data/content.js'
 
 /** Production: same origin. Dev: Vite proxies /api/chat → your deployed function (no CORS). */
@@ -43,7 +43,6 @@ export function Chatbot() {
   const listRef = useRef(null)
   const inputRef = useRef(null)
   const suggestRef = useRef(null)
-  const [photoError, setPhotoError] = useState(false)
   const [suggestOpen, setSuggestOpen] = useState(false)
 
   const scrollToEnd = useCallback(() => {
@@ -179,35 +178,8 @@ export function Chatbot() {
               <div className="chatbot__panel-accent" aria-hidden />
               <header className="chatbot__head">
                 <div className="chatbot__head-brand">
-                  <div
-                    className={
-                      photoError
-                        ? 'chatbot__avatar chatbot__avatar--fallback'
-                        : 'chatbot__avatar chatbot__avatar--photo'
-                    }
-                    aria-hidden
-                  >
-                    {photoError ? (
-                      <span className="chatbot__avatar-fallback">
-                        {profile.name
-                          .split(' ')
-                          .map((n) => n[0])
-                          .join('')
-                          .slice(0, 2)
-                          .toUpperCase()}
-                      </span>
-                    ) : (
-                      <img
-                        className="chatbot__avatar-img"
-                        src={profile.photo}
-                        alt=""
-                        width={40}
-                        height={40}
-                        loading="lazy"
-                        decoding="async"
-                        onError={() => setPhotoError(true)}
-                      />
-                    )}
+                  <div className="chatbot__avatar chatbot__avatar--robot" aria-hidden>
+                    <ChatbotHeaderRobot />
                   </div>
                   <div className="chatbot__head-text">
                     <div className="chatbot__title-row">
@@ -429,6 +401,31 @@ export function Chatbot() {
         )}
       </motion.button>
     </div>
+  )
+}
+
+/** Header mascot: your AI robot art + gentle float (see `/public/chatbot-header-robot.png`). */
+function ChatbotHeaderRobot() {
+  const reduce = useReducedMotion()
+
+  return (
+    <motion.div
+      className="chatbot__robot-motion"
+      aria-hidden
+      initial={false}
+      animate={reduce ? {} : { y: [0, -3, 0] }}
+      transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
+    >
+      <img
+        className="chatbot__robot-img"
+        src="/chatbot-header-robot.png"
+        alt=""
+        width={112}
+        height={112}
+        decoding="async"
+        loading="eager"
+      />
+    </motion.div>
   )
 }
 
