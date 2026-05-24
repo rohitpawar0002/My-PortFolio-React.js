@@ -12,7 +12,7 @@ import { Chatbot } from './components/Chatbot'
 
 const THEME_KEY = 'portfolio-theme'
 
-function readThemeFromDom() {
+function readThemeFromDom() {  
   if (typeof document === 'undefined') return 'dark'
   return document.documentElement.getAttribute('data-theme') === 'light'
     ? 'light'
