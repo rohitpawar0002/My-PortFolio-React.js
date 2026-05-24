@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react(), tailwindcss()],
+    // base:'/My-PortFolio-React.js',
     server: {
       // Dev only: path without ".netlify" is more reliable with Vite's proxy; forwards to your live function.
       proxy: {

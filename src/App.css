@@ -1847,6 +1847,40 @@ main {
   display: block;
 }
 
+.chatbot__avatar--robot {
+  display: grid;
+  place-items: center;
+  width: 3.35rem;
+  height: 3.35rem;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  /* Let robot multiply-blend against the real .chatbot__head (no extra “card” fill) */
+  isolation: auto;
+  overflow: visible;
+}
+
+.chatbot__robot-motion {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  filter: drop-shadow(0 2px 6px rgba(14, 165, 233, 0.35));
+}
+
+.chatbot__robot-img {
+  display: block;
+  width: 108%;
+  height: 108%;
+  max-width: none;
+  object-fit: contain;
+  object-position: center 55%;      
+  /* Knock out flat white background in the raster; works with header-matched fill above */
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
 .chatbot__avatar--fallback {
   display: grid;
   place-items: center;
