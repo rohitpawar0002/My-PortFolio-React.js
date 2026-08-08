@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { profile } from '../data/content'
-import heroDashboard from '../assets/hero-dashboard.svg'
+import Threads from './backgrounds/Threads'
 import { HeroCircleAvatar } from './HeroCircleAvatar'
 import { HeroSocial } from './HeroSocial'
 
@@ -30,14 +30,26 @@ const itemPhoto = {
   },
 }
 
-export function Hero() {
+/** @param {{ theme?: 'dark' | 'light' }} props */
+export function Hero({ theme = 'dark' }) {
   const reduceMotion = useReducedMotion()
+  const threadsColor =
+    theme === 'light' ? [0.02, 0.52, 0.78] : [0.22, 0.74, 0.97]
 
   return (
     <section className="hero" id="top" aria-labelledby="hero-title">
+      {!reduceMotion ? (
+        <div className="hero__threads" aria-hidden>
+          <Threads
+            color={threadsColor}
+            amplitude={1.15}
+            distance={0}
+            enableMouseInteraction
+          />
+        </div>
+      ) : null}
       <div className="hero__glow hero__glow--1" aria-hidden />
       <div className="hero__glow hero__glow--2" aria-hidden />
-      <div className="hero__grid" aria-hidden />
 
       <div className="hero__layout">
         <motion.div
@@ -61,13 +73,19 @@ export function Hero() {
               {profile.roleLeadIn}{' '}
               <span className="hero__role-accent">{profile.title}</span>.
             </motion.p>
-            <motion.p className="hero__tagline hero__tagline--hero" variants={item}>
+            <motion.p
+              className="hero__tagline hero__tagline--hero"
+              variants={item}
+            >
               {profile.tagline}
             </motion.p>
             <motion.div variants={item}>
               <HeroSocial />
             </motion.div>
-            <motion.div className="hero__actions hero__actions--hero" variants={item}>
+            <motion.div
+              className="hero__actions hero__actions--hero"
+              variants={item}
+            >
               <motion.a
                 className="btn btn--hero"
                 href="#contact"
@@ -98,41 +116,13 @@ export function Hero() {
             </motion.div>
           </div>
 
-          <motion.div className="hero__col hero__col--visual" variants={itemPhoto}>
+          <motion.div
+            className="hero__col hero__col--visual"
+            variants={itemPhoto}
+          >
             <div className="hero__avatar-stage">
               <HeroCircleAvatar />
             </div>
-          </motion.div>
-        </motion.div>
-
-        <motion.div
-          className="hero__visual"
-          initial={{ opacity: 0, y: reduceMotion ? 0 : 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <motion.div
-            className="hero__dashboard"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25, duration: 0.55 }}
-            whileHover={
-              reduceMotion
-                ? undefined
-                : { y: -4, transition: { duration: 0.3 } }
-            }
-          >
-            <div className="hero__dashboard-ui-wrap" aria-hidden>
-              <img
-                src={heroDashboard}
-                alt=""
-                className="hero__dashboard-img"
-                width={440}
-                height={360}
-                decoding="async"
-              />
-            </div>
-            <div className="hero__dashboard-shine" aria-hidden />
           </motion.div>
         </motion.div>
       </div>

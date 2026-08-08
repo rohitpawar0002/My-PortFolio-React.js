@@ -276,6 +276,30 @@
   animation: grid-drift 28s linear infinite;
 }
 
+.hero__threads {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: auto;
+  opacity: 0.85;
+  /* Nudge the wave band slightly toward the upper hero */
+  transform: translateY(-25%);
+}
+
+.hero__layout,
+.hero__scroll {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero__layout a,
+.hero__layout button,
+.hero__col--visual,
+.hero__avatar-stage {
+  pointer-events: auto;
+}
+
 @keyframes grid-drift {
   0% {
     transform: translate(0, 0);
@@ -402,15 +426,6 @@
   .hero__actions--hero {
     justify-content: center;
   }
-}
-
-.hero__visual {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: min(560px, 100%);
-  margin-inline: auto;
 }
 
 .hero__greeting {
@@ -554,57 +569,6 @@
     var(--hero-fallback-1),
     var(--hero-fallback-2)
   );
-}
-
-.hero__dashboard {
-  position: relative;
-  width: 100%;
-  border-radius: 1.25rem;
-  overflow: hidden;
-  box-shadow: var(--hero-dashboard-shadow);
-}
-
-.hero__dashboard-ui-wrap {
-  position: relative;
-  width: 100%;
-  background: var(--bg-deep);
-}
-
-.hero__dashboard-img {
-  display: block;
-  width: 100%;
-  height: auto;
-  vertical-align: middle;
-}
-
-.hero__dashboard-shine {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    120deg,
-    transparent 40%,
-    var(--shine-stop) 50%,
-    transparent 60%
-  );
-  background-size: 200% 100%;
-  animation: shine-sweep 7s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes shine-sweep {
-  0%,
-  100% {
-    background-position: 200% 0;
-  }
-  50% {
-    background-position: -200% 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero__dashboard-shine {
-    animation: none;
-  }
 }
 
 .hero__eyebrow {
@@ -847,21 +811,6 @@ main {
 }
 
 /* Skills */
-.skills__banner {
-  margin: 0 0 1.5rem;
-  border-radius: 1rem;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  background: var(--bg-elevated);
-}
-
-.skills__banner-img {
-  display: block;
-  width: 100%;
-  height: auto;
-  vertical-align: middle;
-}
-
 .skills {
   list-style: none;
   margin: 0;
@@ -1012,6 +961,37 @@ main {
   grid-template-columns: 1fr;
 }
 
+.project-spotlight {
+  border-radius: 1rem;
+}
+
+/* Glare wrapper must not clip the 3D phone / browser mockup */
+.project-media-glare.glare-hover {
+  overflow: visible;
+  height: auto;
+  min-height: 100%;
+}
+
+.project-media-glare.glare-hover::before {
+  border-radius: 0;
+  /* Keep glare wash inside the media column without clipping the device */
+  clip-path: inset(0);
+}
+
+.project-card__media--r3f,
+.project-card__media--model {
+  min-height: 380px;
+}
+
+.phone-model-viewer__loading {
+  display: grid;
+  place-items: center;
+  min-height: 340px;
+  width: 100%;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
 .project-card {
   position: relative;
   padding: 0;
@@ -1019,11 +999,35 @@ main {
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   overflow: hidden;
+  transform-style: preserve-3d;
 }
 
-/* Allow the draggable phone mockup to move without clipping (see ProjectPhoneSlideshow). */
-.project-card:has(.project-card__media--device) {
+/* Allow the 3D phone mockup to move without clipping (see ProjectPhoneSlideshow). */
+.project-card:has(.project-card__media--device),
+.project-card:has(.project-card__media--browser),
+.project-card:has(.project-card__media--model) {
   overflow: visible;
+}
+
+.project-card--featured {
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent),
+    0 24px 48px var(--shadow-card);
+}
+
+.project-card__badge {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 0.55rem;
+  padding: 0.28rem 0.65rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-bright);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 22%, var(--bg-elevated));
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 .project-card__layout {
@@ -1043,6 +1047,14 @@ main {
   background: var(--media-well);
   min-height: 220px;
   border-top: 1px solid var(--border);
+  overflow: visible;
+}
+
+.project-card__col--media:has(.project-card__media--device),
+.project-card__col--media:has(.project-card__media--browser) {
+  /* Room for full phone bezel + caption without clipping */
+  min-height: 520px;
+  padding-block: 0.35rem;
 }
 
 .project-card__col--media .project-card__media {
@@ -1066,6 +1078,11 @@ main {
     min-height: unset;
     border-top: none;
     border-left: 1px solid var(--border);
+  }
+
+  .project-card__col--media:has(.project-card__media--device),
+  .project-card__col--media:has(.project-card__media--browser) {
+    min-height: 560px;
   }
 
   .project-card--reverse .project-card__col--media {
@@ -1118,24 +1135,92 @@ main {
 /* Single device frame + slideshow (Capacitor / Ionic previews) */
 .project-card__media--device {
   aspect-ratio: unset;
-  min-height: 280px;
-  padding: 1rem 0.75rem 0.85rem;
+  min-height: 320px;
+  padding: 1.5rem 0.75rem 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow: visible;
+  perspective: 1100px;
+  box-sizing: border-box;
 }
 
 /* Angular web dashboard — browser chrome + rotating screenshots */
 .project-card__media--browser {
   aspect-ratio: unset;
-  min-height: 260px;
-  padding: 1rem 0.85rem 0.85rem;
+  min-height: 280px;
+  padding: 1.5rem 0.85rem 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  overflow: visible;
+  perspective: 1100px;
+  box-sizing: border-box;
+}
+
+.project-preview-stage {
+  position: relative;
+  width: 100%;
+  /* Vertical padding so float / 3D tilt never clips the bezel */
+  padding: 14px 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1100px;
+  transform-style: preserve-3d;
+  overflow: visible;
+}
+
+.project-preview-stage__glow {
+  position: absolute;
+  inset: 18% 12% 8%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--accent) 28%, transparent) 0%,
+    transparent 70%
+  );
+  filter: blur(18px);
+  pointer-events: none;
+  z-index: 0;
+  animation: preview-glow-pulse 6s ease-in-out infinite;
+}
+
+.project-preview-stage__tilt {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  will-change: transform;
+  cursor: grab;
+}
+
+.project-preview-stage__tilt:active {
+  cursor: grabbing;
+}
+
+@keyframes preview-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-preview-stage__glow {
+    animation: none;
+  }
 }
 
 .project-browser {
@@ -1144,9 +1229,11 @@ main {
   border-radius: 0.65rem;
   overflow: hidden;
   background: #1e1e22;
+  transform-style: preserve-3d;
   box-shadow:
-    0 18px 42px rgba(0, 0, 0, 0.45),
-    0 0 0 1px rgba(255, 255, 255, 0.08);
+    0 22px 48px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 0 40px color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .project-browser__chrome {
@@ -1202,17 +1289,23 @@ main {
 .project-browser__viewport {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
+  /* Match SWM / Nueotel ultra-wide dashboard captures (~2.4:1) */
+  aspect-ratio: 2.4 / 1;
   background: #0f1117;
   overflow: hidden;
+  transform-style: preserve-3d;
 }
 
 .project-browser__shot {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: top center;
+  object-fit: contain;
+  object-position: center center;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
 .project-slideshow__shot--zoomable {
@@ -1374,13 +1467,14 @@ main {
   align-items: center;
   gap: 0.55rem;
   width: 100%;
-  max-width: 220px;
+  max-width: 240px;
+  transform-style: preserve-3d;
 }
 
 /* iPhone 16 Pro–style: titanium chassis, thin uniform frame */
 .project-device--iphone16-pro .project-device__bezel {
   position: relative;
-  width: min(52vw, 200px);
+  width: min(50vw, 205px);
   padding: 0.34rem 0.3rem;
   border-radius: 2.05rem;
   background:
@@ -1402,7 +1496,9 @@ main {
     0 0 0 1px rgba(255, 255, 255, 0.1),
     inset 0 1px 2px rgba(255, 255, 255, 0.28),
     inset 0 -1px 2px rgba(0, 0, 0, 0.22),
-    0 22px 44px rgba(0, 0, 0, 0.48);
+    0 28px 56px rgba(0, 0, 0, 0.55),
+    0 8px 16px rgba(0, 0, 0, 0.35);
+  transform: translateZ(24px);
 }
 
 .project-device__screen {
@@ -1412,6 +1508,7 @@ main {
   border-radius: 1.72rem;
   overflow: hidden;
   background: #000;
+  transform-style: preserve-3d;
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.07),
     inset 0 0 0 2px rgba(0, 0, 0, 0.55);
@@ -1420,13 +1517,16 @@ main {
 /* Full-screen captures already include Dynamic Island + system chrome — no overlay */
 
 .project-device__shot {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 1;
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: top center;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
 .project-device__caption {

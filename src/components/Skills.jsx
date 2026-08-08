@@ -1,24 +1,14 @@
 import { motion } from 'framer-motion'
 import { skills } from '../data/content'
-import skillsStack from '../assets/skills-stack.svg'
-import { AnimatedImage } from './AnimatedImage'
 import { SectionHeading } from './SectionHeading'
 
 export function Skills() {
-  return (    
+  return (
     <section className="section" id="skills" aria-labelledby="skills-title">
       <SectionHeading
         eyebrow="Toolkit"
         title="Skills & technologies"
         titleId="skills-title"
-      />
-      <AnimatedImage
-        src={skillsStack}
-        alt=""
-        className="skills__banner"
-        imgClassName="skills__banner-img"
-        float={false}
-        delay={0}
       />
       <motion.ul
         className="skills"

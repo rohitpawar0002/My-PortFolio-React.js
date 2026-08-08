@@ -2,13 +2,13 @@
 
 export const profile = {
   name: 'Rohit Pawar',
-  title: 'Software Developer',
+  title: 'Frontend & Full-Stack Developer',
   /** Hero intro line (reference-style greeting). */
   greeting: "Hello, it's me",
   /** Shown before the highlighted role, e.g. "And I'm an". */
   roleLeadIn: "And I'm an",
   tagline:
-    'Real-time Angular dashboards, Ionic/Capacitor GPS apps, Node.js/MS SQL APIs, and a React portfolio with a Gemini API chatbot, serverless backend, and CI/CD (GitHub → Netlify).',
+    'HRMS attendance (Worklio) with face punch & Live Activities, real-time Angular dashboards, Ionic/Capacitor GPS apps, Node.js/MS SQL APIs, and a React portfolio with a Gemini chatbot and CI/CD.',
   location: 'Pune, India',
   phone: '+91 9730023006',
   email: 'rohitt.pawar02@gmail.com',
@@ -23,9 +23,9 @@ export const profile = {
 }
 
 export const summary = [
-  'Software developer with experience in real-time dashboards, GPS tracking mobile applications (Ionic/Capacitor), and scalable REST APIs using Angular, React, TypeScript, Ionic, Node.js, and MS SQL.',
-  'Built and deployed this portfolio (React, Vite, Framer Motion) at rohitt-portfolio-react.netlify.app: AI chatbot powered by the Google Gemini API with a serverless backend, plus CI/CD from GitHub to Netlify. I use Cursor AI to accelerate feature delivery, refine React components, and improve performance.',
-  'Skilled in responsive UIs, third-party API integration, and location-based applications, working with cross-functional teams to ship scalable, high-performance software.',
+  'Frontend & full-stack developer with 2+ years of experience building real-time dashboards, GPS tracking systems, and REST APIs using Angular, React, TypeScript, Ionic, Node.js, and MS SQL.',
+  'Shipped Worklio, a secure HRMS attendance app with on-device face detection, geofencing, push notifications, and iOS Live Activities — rolled out org-wide to 500+ employees. Also built Trackzia for live GPS monitoring across government modules.',
+  'Built this AI-powered portfolio (React, Vite, Framer Motion) with a Gemini chatbot, serverless backend, and automated CI/CD. Skilled at leveraging AI tools to accelerate development and deliver high-performance solutions.',
 ]
 
 export const skills = [
@@ -34,19 +34,26 @@ export const skills = [
   'Ionic',
   'TypeScript',
   'JavaScript',
+  'HTML',
+  'CSS',
+  'Tailwind CSS',
+  'Bootstrap',
   'Node.js',
   'Express.js',
   'REST APIs',
   'MS SQL',
-  'HTML',
-  'CSS',
-  'SCSS',
-  'Bootstrap',
+  'DynamoDB',
   'Capacitor',
+  'Git',
+  'GitHub',
   'GitLab',
+  'Netlify',
   'Postman',
   'Cursor AI',
   'Google Maps API',
+  'Razorpay',
+  'CI/CD',
+  'Gemini API',
 ]
 
 export const experience = [
@@ -58,12 +65,13 @@ export const experience = [
     stack:
       'Angular 16+, TypeScript, Ionic, Capacitor, Node.js, Express.js, MS SQL, REST APIs, Google Maps API, Razorpay, Cursor AI',
     highlights: [
-      'Built and optimized real-time Angular dashboards for 5+ government monitoring modules with Google Maps and live REST APIs.',
-      'Engineered Trackzia GPS tracking app (Ionic, Capacitor) with geofencing, push notifications, and Cart / Add-to-Cart using Cursor AI.',
-      'Designed 10+ reusable UI components (Angular, TypeScript, HTML, SCSS, Bootstrap) for desktop and mobile.',
-      'Integrated Razorpay for secure digital payments in the mobile app.',
-      'Delivered SMW (Solid Waste Management) iOS app for municipal vehicle monitoring with GPS tracking.',
-      'Developed 15+ REST API endpoints (Node.js, Express, MS SQL) for secure CRUD and data management.',
+      'Built and optimized real-time Angular dashboards for 5+ government monitoring modules using Google Maps and REST APIs, supporting live analytics for 1,000+ tracked assets.',
+      'Delivered Worklio, a secure HRMS attendance app (Ionic, Angular, Capacitor) for iOS/Android covering face-based punch-in/out, geofencing, leave, expenses, payslips, and shift-aware sessions — rolled out org-wide to 500+ employees.',
+      'Engineered on-device face detection with liveness and sharpness checks plus biometric authentication, cutting fraudulent punch-ins by an estimated 90%+ with check-in under 3 seconds.',
+      'Implemented push notifications and iOS Live Activities for real-time break/session status on Lock Screen and Dynamic Island.',
+      'Created Trackzia GPS tracking (Ionic, Capacitor) with geofencing, push alerts, and Cart / Add-to-Cart; used AI tooling to cut Cart feature dev time by ~40%.',
+      'Incorporated Razorpay for secure in-app payments (100+ transactions) and planned 10+ reusable UI components across desktop and mobile.',
+      'Developed 15+ REST API endpoints (Node.js, Express, MS SQL) supporting secure CRUD across 5+ production modules.',
     ],
   },
   {
@@ -73,14 +81,84 @@ export const experience = [
     period: 'Jan 2024 — Aug 2024',
     stack: 'Angular, TypeScript, HTML, CSS, REST APIs',
     highlights: [
-      'Designed service dashboards for 4 communication modules: SMS, WhatsApp, Voice, and RCS (Neotel platform).',
-      'Built 8+ responsive UI components with REST APIs for real-time monitoring.',
-      'Optimized Angular components and API calls to improve dashboard loading and responsiveness.',
+      'Planned service dashboards for 4 communication modules (SMS, WhatsApp, Voice, and RCS) on the Neotel platform.',
+      'Built 8+ responsive UI components and connected REST APIs for real-time monitoring across 4 modules.',
+      'Enhanced Angular components and API calls, improving dashboard load time and responsiveness by an estimated 30%.',
     ],
   },
 ]
 
 export const projects = [
+  {
+    slug: 'worklio',
+    name: 'Worklio. — HRMS attendance & workforce',
+    stack:
+      'Ionic, Capacitor, Angular, TypeScript, Face recognition, Geofencing, Push notifications, iOS Live Activities',
+    points: [
+      'Production HRMS mobile app for employees, branch managers, and admins: face punch-in/out, geofence validation, shifts, breaks, leave, expenses, and payslips.',
+      'Owned the frontend end-to-end (Ionic/Angular/Capacitor) plus push notifications and iOS Live Activities (Lock Screen + Dynamic Island) for live break/session timers.',
+      'On-device face detection with liveness checks and biometric auth — rolled out org-wide to 500+ employees, replacing manual attendance.',
+      'Role-based flows: employee dashboard & history, manager leave approval, monthly attendance calendars, and team oversight.',
+    ],
+    appStoreUrl: 'https://apps.apple.com/in/app/worklio/id6774634220',
+    playStoreUrl:
+      'https://play.google.com/store/apps/details?id=com.nuevasswm.Worklioo&pcampaignid=web_share',
+    screenshotIntervalMs: 3000,
+    screenshots: [
+      {
+        src: '/worklio/00-live-activity-lock.png',
+        label: 'Live Activity — Lock Screen (On Break)',
+      },
+      {
+        src: '/worklio/01-live-activity-home.png',
+        label: 'Live Activity — Dynamic Island',
+      },
+      { src: '/worklio/02-login.jpeg', label: 'Login — mobile OTP' },
+      { src: '/worklio/02b-otp.jpeg', label: 'OTP verification' },
+      {
+        src: '/worklio/04-face-registration.jpeg',
+        label: 'Face registration',
+      },
+      {
+        src: '/worklio/05-dashboard-home.jpeg',
+        label: 'Dashboard — punch, break & shift',
+      },
+      {
+        src: '/worklio/15-admin-dashboard.png',
+        label: 'Admin dashboard — attendance overview',
+      },
+      {
+        src: '/worklio/16-geofence-creation.png',
+        label: 'Geofence creation — branch locations',
+      },
+      {
+        src: '/worklio/17-attendance-breaks.png',
+        label: 'Punch in & break details',
+      },
+      {
+        src: '/worklio/18-punch-location-address.png',
+        label: 'Punch & break locations with address',
+      },
+      {
+        src: '/worklio/19-attendance-map.png',
+        label: 'Attendance map — geofence & markers',
+      },
+      {
+        src: '/worklio/06-work-analytics.jpeg',
+        label: 'Working hours & 7-day analytics',
+      },
+      { src: '/worklio/07-profile.jpeg', label: 'My Profile' },
+      { src: '/worklio/08-menu.jpeg', label: 'Menu — leave, salary, expense' },
+      { src: '/worklio/14-my-leave.jpeg', label: 'My Leave / WFH' },
+      { src: '/worklio/13-leave-approval.jpeg', label: 'Leave approval (manager)' },
+      {
+        src: '/worklio/12-monthly-attendance.jpeg',
+        label: 'Monthly attendance calendar',
+      },
+      { src: '/worklio/09-payslips.jpeg', label: 'Payslips' },
+      { src: '/worklio/11-notifications.jpeg', label: 'Push notifications inbox' },
+    ],
+  },
   {
     slug: 'trackiza',
     name: 'Trackiza — GPS personal tracking',
@@ -96,7 +174,7 @@ export const projects = [
     playStoreUrl:
       'https://play.google.com/store/apps/details?id=com.ionic.trackzia&hl=en',
     /** Milliseconds between slides in the phone preview (Ionic app gallery). */
-    screenshotIntervalMs: 8000,
+    screenshotIntervalMs: 3000,
     /** Files in `public/trackiza/`. First slide: phone screen recording + poster frame. */
     screenshots: [
       {
@@ -136,7 +214,7 @@ export const projects = [
     ],
     previewVariant: 'browser',
     browserTitle: 'SWM Dashboard Monitor',
-    screenshotIntervalMs: 9000,
+    screenshotIntervalMs: 3000,
     screenshots: [
       {
         src: '/swm/00-overview-recording.mp4',
@@ -169,7 +247,7 @@ export const projects = [
     ],
     previewVariant: 'browser',
     browserTitle: 'Nueotel Communication Platform',
-    screenshotIntervalMs: 4000,
+    screenshotIntervalMs: 3000,
     screenshots: [
       {
         src: '/nueotel/01-voice-dashboard.png',
@@ -205,7 +283,8 @@ export const projects = [
     points: [
       'Single-page portfolio built with React and Vite: modular sections, shared content in one data module, and fast production builds.',
       'Motion and UX with Framer Motion, fixed navigation with scroll-based active links, and responsive layouts for projects and contact.',
-      'Rich project previews: iPhone and browser mockups, auto-rotating screenshots, and a lightbox gallery with keyboard navigation.',
+      'Rich project previews: 3D iPhone and browser mockups, auto-rotating screenshots, and a lightbox gallery with keyboard navigation.',
+      'AI chatbot powered by Google Gemini API with a serverless Netlify Functions backend and CI/CD from GitHub to Netlify.',
     ],
   },
   {

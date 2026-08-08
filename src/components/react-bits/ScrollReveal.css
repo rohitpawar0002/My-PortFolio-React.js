@@ -1,0 +1,27 @@
+.scroll-reveal {
+  margin: 0;
+}
+
+.scroll-reveal-text {
+  margin: 0;
+  display: inline;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+}
+
+.scroll-reveal .word {
+  display: inline-block;
+  will-change: opacity, filter;
+}
+
+.project-card__name.scroll-reveal,
+.scroll-reveal.project-card__name {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2.4vw, 1.45rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-bright);
+  line-height: 1.3;
+}

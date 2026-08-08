@@ -1,8 +1,8 @@
-import { AnimatePresence, motion, useInView } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
-import { createPortal } from 'react-dom'
+import { AnimatePresence, motion, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { DepthCarouselModal } from './react-bits/DepthCarouselModal'
 
-const DEFAULT_INTERVAL_MS = 3500
+const DEFAULT_INTERVAL_MS = 3000
 
 function isVideoShot(s) {
   if (!s || !s.src) return false
@@ -18,13 +18,23 @@ export function ProjectPhoneSlideshow({
   browserTitle = 'Web app',
 }) {
   const wrapRef = useRef(null)
+  const stageRef = useRef(/** @type {HTMLDivElement | null} */ (null))
   const videoRef = useRef(/** @type {HTMLVideoElement | null} */ (null))
   const isInView = useInView(wrapRef, { amount: 0.2, margin: '-60px' })
   const [index, setIndex] = useState(0)
+  const [dir, setDir] = useState(1)
   const [reduceMotion, setReduceMotion] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState(
     /** @type {number | null} */ (null),
   )
+  const [carouselCaption, setCarouselCaption] = useState('')
+
+  const mx = useMotionValue(0)
+  const my = useMotionValue(0)
+  const springX = useSpring(mx, { stiffness: 180, damping: 22, mass: 0.4 })
+  const springY = useSpring(my, { stiffness: 180, damping: 22, mass: 0.4 })
+  const rotateX = useTransform(springY, [-0.5, 0.5], [12, -12])
+  const rotateY = useTransform(springX, [-0.5, 0.5], [-14, 14])
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -41,6 +51,7 @@ export function ProjectPhoneSlideshow({
   useEffect(() => {
     if (n <= 1 || reduceMotion || !isInView) return
     const id = window.setInterval(() => {
+      setDir(1)
       setIndex((i) => (i + 1) % n)
     }, intervalMs)
     return () => window.clearInterval(id)
@@ -60,59 +71,40 @@ export function ProjectPhoneSlideshow({
     if (lightboxIndex === null) return
     const onKey = (e) => {
       if (e.key === 'Escape') setLightboxIndex(null)
-      if (n > 1 && e.key === 'ArrowLeft') {
-        e.preventDefault()
-        setLightboxIndex((i) => {
-          if (i == null) return i
-          const next = (i - 1 + n) % n
-          setIndex(next)
-          return next
-        })
-      }
-      if (n > 1 && e.key === 'ArrowRight') {
-        e.preventDefault()
-        setLightboxIndex((i) => {
-          if (i == null) return i
-          const next = (i + 1) % n
-          setIndex(next)
-          return next
-        })
-      }
     }
-    const prevOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
     window.addEventListener('keydown', onKey)
-    return () => {
-      document.body.style.overflow = prevOverflow
-      window.removeEventListener('keydown', onKey)
-    }
-  }, [lightboxIndex, n])
+    return () => window.removeEventListener('keydown', onKey)
+  }, [lightboxIndex])
+
+  const carouselItems = useMemo(
+    () =>
+      shots.map((s) => ({
+        image: isVideoShot(s) ? s.poster || s.src : s.src,
+        alt: s.label || '',
+      })),
+    [shots],
+  )
+
+  const onPointerMove = (e) => {
+    if (reduceMotion || !stageRef.current) return
+    const rect = stageRef.current.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width - 0.5
+    const y = (e.clientY - rect.top) / rect.height - 0.5
+    mx.set(x)
+    my.set(y)
+  }
+
+  const onPointerLeave = () => {
+    mx.set(0)
+    my.set(0)
+  }
 
   const openLightbox = () => {
+    setCarouselCaption(current?.label || '')
     setLightboxIndex(safeIndex)
   }
 
   const closeLightbox = () => setLightboxIndex(null)
-
-  const goLightboxPrev = () => {
-    if (n <= 1) return
-    setLightboxIndex((i) => {
-      if (i == null) return i
-      const next = (i - 1 + n) % n
-      setIndex(next)
-      return next
-    })
-  }
-
-  const goLightboxNext = () => {
-    if (n <= 1) return
-    setLightboxIndex((i) => {
-      if (i == null) return i
-      const next = (i + 1) % n
-      setIndex(next)
-      return next
-    })
-  }
 
   if (!n || !current) return null
 
@@ -127,7 +119,7 @@ export function ProjectPhoneSlideshow({
       : 'project-device__shot project-slideshow__shot--zoomable'
 
   const slide = (
-    <AnimatePresence mode="wait" initial={false}>
+    <AnimatePresence mode="wait" custom={dir} initial={false}>
       {isVideoShot(current) ? (
         <motion.video
           key={current.src}
@@ -139,10 +131,37 @@ export function ProjectPhoneSlideshow({
           loop
           playsInline
           preload="metadata"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: reduceMotion ? 0 : 0.38 }}
+          custom={dir}
+          variants={{
+            enter: (d) =>
+              reduceMotion
+                ? { opacity: 0 }
+                : {
+                    opacity: 0,
+                    rotateY: d > 0 ? 48 : -48,
+                    scale: 0.9,
+                    filter: 'blur(4px)',
+                  },
+            center: {
+              opacity: 1,
+              rotateY: 0,
+              scale: 1,
+              filter: 'blur(0px)',
+            },
+            exit: (d) =>
+              reduceMotion
+                ? { opacity: 0 }
+                : {
+                    opacity: 0,
+                    rotateY: d > 0 ? -48 : 48,
+                    scale: 0.9,
+                    filter: 'blur(4px)',
+                  },
+          }}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ duration: reduceMotion ? 0 : 0.52, ease: [0.22, 1, 0.36, 1] }}
           onClick={openLightbox}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -160,10 +179,37 @@ export function ProjectPhoneSlideshow({
           src={current.src}
           alt={current.label || `Screen ${safeIndex + 1}`}
           className={shotClass}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: reduceMotion ? 0 : 0.38 }}
+          custom={dir}
+          variants={{
+            enter: (d) =>
+              reduceMotion
+                ? { opacity: 0 }
+                : {
+                    opacity: 0,
+                    rotateY: d > 0 ? 48 : -48,
+                    scale: 0.9,
+                    filter: 'blur(4px)',
+                  },
+            center: {
+              opacity: 1,
+              rotateY: 0,
+              scale: 1,
+              filter: 'blur(0px)',
+            },
+            exit: (d) =>
+              reduceMotion
+                ? { opacity: 0 }
+                : {
+                    opacity: 0,
+                    rotateY: d > 0 ? -48 : 48,
+                    scale: 0.9,
+                    filter: 'blur(4px)',
+                  },
+          }}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ duration: reduceMotion ? 0 : 0.52, ease: [0.22, 1, 0.36, 1] }}
           loading={safeIndex === 0 ? 'eager' : 'lazy'}
           decoding="async"
           onClick={openLightbox}
@@ -181,90 +227,25 @@ export function ProjectPhoneSlideshow({
     </AnimatePresence>
   )
 
-  const lbShot =
-    lightboxIndex !== null && shots[lightboxIndex]
-      ? shots[lightboxIndex]
-      : null
-  const lbLabel =
-    lbShot?.label || (lightboxIndex != null ? `Screen ${lightboxIndex + 1}` : '')
+  const lightboxNode = (
+    <DepthCarouselModal
+      open={lightboxIndex !== null}
+      items={carouselItems}
+      initialIndex={lightboxIndex ?? 0}
+      title="Project screens"
+      caption={carouselCaption}
+      variant={variant}
+      onClose={closeLightbox}
+      onChange={(i, item) => {
+        setIndex(i)
+        setCarouselCaption(item?.alt || shots[i]?.label || '')
+      }}
+    />
+  )
 
-  const lightboxNode =
-    lightboxIndex !== null &&
-    lbShot &&
-    createPortal(
-      <div
-        className="project-lightbox"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Enlarged screenshot gallery"
-      >
-        <button
-          type="button"
-          className="project-lightbox__backdrop"
-          aria-label="Close enlarged image"
-          onClick={closeLightbox}
-        />
-        <figure className="project-lightbox__figure">
-          <button
-            type="button"
-            className="project-lightbox__close"
-            aria-label="Close"
-            onClick={closeLightbox}
-          >
-            ×
-          </button>
-          {isVideoShot(lbShot) ? (
-            <video
-              key={lbShot.src}
-              src={lbShot.src}
-              className="project-lightbox__img project-lightbox__video"
-              controls
-              playsInline
-              autoPlay
-            />
-          ) : (
-            <img
-              key={lbShot.src}
-              src={lbShot.src}
-              alt={lbLabel}
-              className="project-lightbox__img"
-            />
-          )}
-          {lbLabel ? (
-            <figcaption className="project-lightbox__caption">
-              {lbLabel}
-            </figcaption>
-          ) : null}
-          {n > 1 ? (
-            <div
-              className="project-lightbox__nav"
-              aria-label="Gallery navigation"
-            >
-              <button
-                type="button"
-                className="project-lightbox__nav-btn"
-                onClick={goLightboxPrev}
-                aria-label="Previous image"
-              >
-                Previous
-              </button>
-              <span className="project-lightbox__counter" aria-live="polite">
-                {lightboxIndex + 1} / {n}
-              </span>
-              <button
-                type="button"
-                className="project-lightbox__nav-btn"
-                onClick={goLightboxNext}
-                aria-label="Next image"
-              >
-                Next
-              </button>
-            </div>
-          ) : null}
-        </figure>
-      </div>,
-      document.body,
-    )
+  const stageStyle = reduceMotion
+    ? undefined
+    : { rotateX, rotateY, transformStyle: 'preserve-3d' }
 
   return (
     <div
@@ -273,25 +254,45 @@ export function ProjectPhoneSlideshow({
       aria-live={reduceMotion ? 'off' : 'polite'}
       aria-label={`Preview, ${safeIndex + 1} of ${n}`}
     >
-      {variant === 'browser' ? (
-        <div className="project-browser">
-          <div className="project-browser__chrome" aria-hidden>
-            <span className="project-browser__traffic">
-              <span className="project-browser__traffic-dot" />
-              <span className="project-browser__traffic-dot" />
-              <span className="project-browser__traffic-dot" />
-            </span>
-            <div className="project-browser__url">{browserTitle}</div>
-          </div>
-          <div className="project-browser__viewport">{slide}</div>
-        </div>
-      ) : (
-        <motion.div className="project-device project-device--iphone16-pro">
-          <div className="project-device__bezel">
-            <div className="project-device__screen">{slide}</div>
-          </div>
+      <div className="project-preview-stage" ref={stageRef}>
+        <div className="project-preview-stage__glow" aria-hidden />
+        <motion.div
+          className="project-preview-stage__tilt"
+          style={stageStyle}
+          onPointerMove={onPointerMove}
+          onPointerLeave={onPointerLeave}
+          animate={
+            reduceMotion || !isInView
+              ? { y: 0 }
+              : { y: [0, -6, 0] }
+          }
+          transition={
+            reduceMotion || !isInView
+              ? { duration: 0 }
+              : { duration: 5.5, repeat: Infinity, ease: 'easeInOut' }
+          }
+        >
+          {variant === 'browser' ? (
+            <div className="project-browser">
+              <div className="project-browser__chrome" aria-hidden>
+                <span className="project-browser__traffic">
+                  <span className="project-browser__traffic-dot" />
+                  <span className="project-browser__traffic-dot" />
+                  <span className="project-browser__traffic-dot" />
+                </span>
+                <div className="project-browser__url">{browserTitle}</div>
+              </div>
+              <div className="project-browser__viewport">{slide}</div>
+            </div>
+          ) : (
+            <div className="project-device project-device--iphone16-pro">
+              <div className="project-device__bezel">
+                <div className="project-device__screen">{slide}</div>
+              </div>
+            </div>
+          )}
         </motion.div>
-      )}
+      </div>
       {current.label ? (
         <p className="project-device__caption">{current.label}</p>
       ) : null}
@@ -313,7 +314,10 @@ export function ProjectPhoneSlideshow({
                   ? 'project-device__dot is-active'
                   : 'project-device__dot'
               }
-              onClick={() => setIndex(i)}
+              onClick={() => {
+                setDir(i > safeIndex ? 1 : -1)
+                setIndex(i)
+              }}
             />
           ))}
         </div>
