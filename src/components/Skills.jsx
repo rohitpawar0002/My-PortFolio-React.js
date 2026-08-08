@@ -1,8 +1,11 @@
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { skills } from '../data/content'
+import { revealItemSpring } from './animations/Reveal'
 import { SectionHeading } from './SectionHeading'
 
 export function Skills() {
+  const reduceMotion = useReducedMotion()
+
   return (
     <section className="section" id="skills" aria-labelledby="skills-title">
       <SectionHeading
@@ -12,13 +15,13 @@ export function Skills() {
       />
       <motion.ul
         className="skills"
-        initial="hidden"
-        whileInView="show"
+        initial={reduceMotion ? false : 'hidden'}
+        whileInView={reduceMotion ? undefined : 'show'}
         viewport={{ once: true, margin: '-40px' }}
         variants={{
           hidden: {},
           show: {
-            transition: { staggerChildren: 0.04 },
+            transition: { staggerChildren: 0.035, delayChildren: 0.08 },
           },
         }}
       >
@@ -26,16 +29,10 @@ export function Skills() {
           <motion.li
             key={skill}
             className="skills__pill"
-            variants={{
-              hidden: { opacity: 0, scale: 0.85, y: 12 },
-              show: {
-                opacity: 1,
-                scale: 1,
-                y: 0,
-                transition: { type: 'spring', stiffness: 380, damping: 24 },
-              },
-            }}
-            whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            variants={revealItemSpring}
+            whileHover={
+              reduceMotion ? undefined : { y: -4, transition: { duration: 0.2 } }
+            }
           >
             {skill}
           </motion.li>

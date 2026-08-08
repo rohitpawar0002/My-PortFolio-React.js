@@ -1,26 +1,24 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { profile } from '../data/content'
 import contactMail from '../assets/contact-mail.svg'
+import { Reveal } from './animations/Reveal'
+import ScrollReveal from './react-bits/ScrollReveal'
 
 export function Contact() {
   const reduceMotion = useReducedMotion()
 
   return (
     <footer className="contact" id="contact" aria-labelledby="contact-title">
-      <motion.div
-        className="contact__inner"
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-      >
+      <Reveal variant="up" className="contact__inner" amount={0.2}>
         <motion.div
           className="contact__illus"
           aria-hidden
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={reduceMotion ? false : { opacity: 0, scale: 0.92 }}
+          whileInView={
+            reduceMotion ? undefined : { opacity: 1, scale: 1 }
+          }
           viewport={{ once: true }}
-          transition={{ duration: 0.55 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         >
           <motion.img
             src={contactMail}
@@ -32,19 +30,58 @@ export function Contact() {
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           />
         </motion.div>
-        <h2 id="contact-title" className="contact__title">
-          Let&apos;s build something great
-        </h2>
-        <p className="contact__lead">
+
+        {reduceMotion ? (
+          <h2 id="contact-title" className="contact__title">
+            Let&apos;s build something great
+          </h2>
+        ) : (
+          <ScrollReveal
+            as="h2"
+            id="contact-title"
+            containerClassName="contact__title"
+            baseOpacity={0.15}
+            baseRotation={2}
+            blurStrength={4}
+            enableBlur
+            rotationEnd="top 70%"
+            wordAnimationEnd="top 55%"
+          >
+            Let&apos;s build something great
+          </ScrollReveal>
+        )}
+
+        <motion.p
+          className="contact__lead"
+          initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+          whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
           Open to roles in Angular, Ionic, and full-stack development across Pune
           or remote.
-        </p>
-        <div className="contact__links">
+        </motion.p>
+        <motion.div
+          className="contact__links"
+          initial={reduceMotion ? false : 'hidden'}
+          whileInView={reduceMotion ? undefined : 'show'}
+          viewport={{ once: true }}
+          variants={{
+            hidden: {},
+            show: {
+              transition: { staggerChildren: 0.08, delayChildren: 0.15 },
+            },
+          }}
+        >
           {profile.resumeUrl ? (
             <motion.a
               className="contact__link"
               href={profile.resumeUrl}
               download={profile.resumeDownloadName}
+              variants={{
+                hidden: { opacity: 0, y: 14 },
+                show: { opacity: 1, y: 0 },
+              }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -54,6 +91,10 @@ export function Contact() {
           <motion.a
             className="contact__link"
             href={`mailto:${profile.email}`}
+            variants={{
+              hidden: { opacity: 0, y: 14 },
+              show: { opacity: 1, y: 0 },
+            }}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -62,6 +103,10 @@ export function Contact() {
           <motion.a
             className="contact__link contact__link--secondary"
             href={`tel:${profile.phone.replace(/\s/g, '')}`}
+            variants={{
+              hidden: { opacity: 0, y: 14 },
+              show: { opacity: 1, y: 0 },
+            }}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -72,17 +117,21 @@ export function Contact() {
             href={profile.linkedin}
             target="_blank"
             rel="noreferrer noopener"
+            variants={{
+              hidden: { opacity: 0, y: 14 },
+              show: { opacity: 1, y: 0 },
+            }}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
             LinkedIn profile
           </motion.a>
-        </div>
+        </motion.div>
         <p className="contact__copy">
           © {new Date().getFullYear()} {profile.name}. Built with React & Framer
           Motion.
         </p>
-      </motion.div>
+      </Reveal>
     </footer>
   )
 }

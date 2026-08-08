@@ -12,6 +12,7 @@ gsap.registerPlugin(ScrollTrigger)
 export default function ScrollReveal({
   children,
   as: Tag = 'h2',
+  id,
   scrollContainerRef,
   enableBlur = true,
   baseOpacity = 0.1,
@@ -119,7 +120,11 @@ export default function ScrollReveal({
   ])
 
   return (
-    <Tag ref={containerRef} className={`scroll-reveal ${containerClassName}`}>
+    <Tag
+      ref={containerRef}
+      id={id}
+      className={`scroll-reveal ${containerClassName}`}
+    >
       <span className={`scroll-reveal-text ${textClassName}`}>{splitText}</span>
     </Tag>
   )
