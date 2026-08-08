@@ -282,8 +282,8 @@
   z-index: 0;
   pointer-events: auto;
   opacity: 0.85;
-  /* Nudge the wave band slightly toward the upper hero */
-  transform: translateY(-25%);
+  /* Sit a bit higher in the hero */
+  transform: translateY(-24%);
 }
 
 .hero__layout,
