@@ -2,7 +2,8 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { awards, education } from '../data/content'
 import educationCap from '../assets/education-cap.svg'
 import { Reveal, revealItem } from './animations/Reveal'
-import { AnimatedImage } from './AnimatedImage'
+import GlareHover from './react-bits/GlareHover'
+import TiltedMedia from './react-bits/TiltedMedia'
 import { SectionHeading } from './SectionHeading'
 
 export function Education() {
@@ -16,15 +17,71 @@ export function Education() {
         titleId="edu-title"
       />
 
-      <Reveal variant="scale">
-        <AnimatedImage
-          src={educationCap}
-          alt=""
-          className="education__banner"
-          imgClassName="education__banner-img"
-          float={false}
-          delay={0}
-        />
+      <Reveal variant="scale" className="education__banner-wrap">
+        <div className="education__banner-stage">
+          <div className="education__banner-glow" aria-hidden />
+          <GlareHover
+            className="education__banner-glare"
+            width="100%"
+            height="auto"
+            background="transparent"
+            borderColor="transparent"
+            borderRadius="1rem"
+            glareColor="#e0f2fe"
+            glareOpacity={0.32}
+            glareSize={220}
+            transitionDuration={700}
+          >
+            <TiltedMedia rotateAmplitude={14} scaleOnHover={1.045}>
+              <motion.div
+                className="education__banner"
+                initial={
+                  reduceMotion
+                    ? false
+                    : { opacity: 0, y: 36, rotateX: 18, scale: 0.94 }
+                }
+                whileInView={
+                  reduceMotion
+                    ? undefined
+                    : { opacity: 1, y: 0, rotateX: 0, scale: 1 }
+                }
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{
+                  duration: 0.75,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                style={{ transformPerspective: 1200 }}
+              >
+                <motion.div
+                  className="education__banner-float"
+                  animate={
+                    reduceMotion
+                      ? undefined
+                      : {
+                          y: [0, -10, 0],
+                          rotateX: [0, 4, 0],
+                          rotateY: [0, -3, 0],
+                        }
+                  }
+                  transition={{
+                    duration: 5.5,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                  style={{ transformStyle: 'preserve-3d' }}
+                >
+                  <img
+                    src={educationCap}
+                    alt=""
+                    className="education__banner-img"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </motion.div>
+              </motion.div>
+            </TiltedMedia>
+          </GlareHover>
+        </div>
       </Reveal>
 
       <div className="edu-grid">
