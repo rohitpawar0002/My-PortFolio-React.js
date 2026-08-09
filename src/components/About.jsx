@@ -1,8 +1,6 @@
 import { motion } from 'framer-motion'
 import { summary } from '../data/content'
-import aboutCode from '../assets/about-code.svg'
 import { Reveal, RevealStagger, revealItem } from './animations/Reveal'
-import { AnimatedImage } from './AnimatedImage'
 import { SectionHeading } from './SectionHeading'
 
 export function About() {
@@ -14,14 +12,18 @@ export function About() {
     >
       <SectionHeading eyebrow="Profile" title="About me" titleId="about-title" />
       <div className="about__grid">
-        <Reveal variant="left" delay={0.05}>
-          <AnimatedImage
-            src={aboutCode}
-            alt=""
-            className="about__figure"
-            imgClassName="about__img"
-            delay={0}
-          />
+        <Reveal variant="left" delay={0.05} className="about__figure-wrap">
+          <figure className="about__figure">
+            <img
+              className="about__img"
+              src="/about-dashboard.png"
+              alt="Futuristic holographic dashboard interface"
+              width={720}
+              height={1280}
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
         </Reveal>
         <RevealStagger className="about__copy" stagger={0.12}>
           {summary.map((paragraph, i) => (

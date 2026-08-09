@@ -243,9 +243,10 @@ export function ProjectPhoneSlideshow({
     />
   )
 
-  const stageStyle = reduceMotion
-    ? undefined
-    : { rotateX, rotateY, transformStyle: 'preserve-3d' }
+  const stageStyle =
+    reduceMotion || variant !== 'phone'
+      ? undefined
+      : { rotateX, rotateY, transformStyle: 'preserve-3d' }
 
   return (
     <div
@@ -256,42 +257,42 @@ export function ProjectPhoneSlideshow({
     >
       <div className="project-preview-stage" ref={stageRef}>
         <div className="project-preview-stage__glow" aria-hidden />
-        <motion.div
-          className="project-preview-stage__tilt"
-          style={stageStyle}
-          onPointerMove={onPointerMove}
-          onPointerLeave={onPointerLeave}
-          animate={
-            reduceMotion || !isInView
-              ? { y: 0 }
-              : { y: [0, -6, 0] }
-          }
-          transition={
-            reduceMotion || !isInView
-              ? { duration: 0 }
-              : { duration: 5.5, repeat: Infinity, ease: 'easeInOut' }
-          }
-        >
-          {variant === 'browser' ? (
-            <div className="project-browser">
-              <div className="project-browser__chrome" aria-hidden>
-                <span className="project-browser__traffic">
-                  <span className="project-browser__traffic-dot" />
-                  <span className="project-browser__traffic-dot" />
-                  <span className="project-browser__traffic-dot" />
-                </span>
-                <div className="project-browser__url">{browserTitle}</div>
-              </div>
-              <div className="project-browser__viewport">{slide}</div>
+        {variant === 'browser' ? (
+          <div className="project-browser">
+            <div className="project-browser__chrome" aria-hidden>
+              <span className="project-browser__traffic">
+                <span className="project-browser__traffic-dot" />
+                <span className="project-browser__traffic-dot" />
+                <span className="project-browser__traffic-dot" />
+              </span>
+              <div className="project-browser__url">{browserTitle}</div>
             </div>
-          ) : (
+            <div className="project-browser__viewport">{slide}</div>
+          </div>
+        ) : (
+          <motion.div
+            className="project-preview-stage__tilt"
+            style={stageStyle}
+            onPointerMove={onPointerMove}
+            onPointerLeave={onPointerLeave}
+            animate={
+              reduceMotion || !isInView
+                ? { y: 0 }
+                : { y: [0, -6, 0] }
+            }
+            transition={
+              reduceMotion || !isInView
+                ? { duration: 0 }
+                : { duration: 5.5, repeat: Infinity, ease: 'easeInOut' }
+            }
+          >
             <div className="project-device project-device--iphone16-pro">
               <div className="project-device__bezel">
                 <div className="project-device__screen">{slide}</div>
               </div>
             </div>
-          )}
-        </motion.div>
+          </motion.div>
+        )}
       </div>
       {current.label ? (
         <p className="project-device__caption">{current.label}</p>

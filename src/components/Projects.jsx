@@ -1,13 +1,9 @@
-import { motion } from 'framer-motion'
 import { projects } from '../data/content'
 import imgEcommerce from '../assets/project-ecommerce.svg'
 import imgPortfolio from '../assets/project-portfolio.svg'
 import imgTrackiza from '../assets/project-trackiza.svg'
 import { ProjectPhoneSlideshow } from './ProjectPhoneSlideshow'
-import GlareHover from './react-bits/GlareHover'
-import ScrollReveal from './react-bits/ScrollReveal'
 import SpotlightCard from './react-bits/SpotlightCard'
-import TiltedMedia from './react-bits/TiltedMedia'
 import { SectionHeading } from './SectionHeading'
 
 const projectImages = {
@@ -20,8 +16,8 @@ function ProjectMedia({ project, src, mediaClass }) {
   const shots =
     project.screenshots?.filter((s) => s?.src?.trim?.()) ?? []
 
-  const media =
-    shots.length > 0 ? (
+  if (shots.length > 0) {
+    return (
       <ProjectPhoneSlideshow
         shots={shots}
         intervalMs={project.screenshotIntervalMs ?? 3000}
@@ -30,38 +26,14 @@ function ProjectMedia({ project, src, mediaClass }) {
         }
         browserTitle={project.browserTitle}
       />
-    ) : (
-      <div className={mediaClass} aria-hidden>
-        <motion.img
-          src={src}
-          alt=""
-          className="project-card__img"
-          initial={{ scale: 1.05, rotateY: -8 }}
-          whileInView={{ scale: 1, rotateY: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        />
-        <div className="project-card__media-shine" />
-      </div>
     )
+  }
 
   return (
-    <GlareHover
-      className="project-media-glare"
-      width="100%"
-      height="auto"
-      background="transparent"
-      borderColor="transparent"
-      borderRadius="0"
-      glareColor="#e0f2fe"
-      glareOpacity={0.28}
-      glareSize={240}
-      transitionDuration={700}
-    >
-      <TiltedMedia rotateAmplitude={10} scaleOnHover={1.03}>
-        {media}
-      </TiltedMedia>
-    </GlareHover>
+    <div className={mediaClass} aria-hidden>
+      <img src={src} alt="" className="project-card__img" />
+      <div className="project-card__media-shine" />
+    </div>
   )
 }
 
@@ -90,7 +62,7 @@ export function Projects() {
               className="project-spotlight"
               spotlightColor={spotlight}
             >
-              <motion.article
+              <article
                 className={[
                   'project-card',
                   reverse ? 'project-card--reverse' : '',
@@ -98,15 +70,6 @@ export function Projects() {
                 ]
                   .filter(Boolean)
                   .join(' ')}
-                initial={{ opacity: 0, y: 48, rotateX: 12, scale: 0.97 }}
-                whileInView={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
-                viewport={{ once: true, amount: 0.2, margin: '-60px' }}
-                transition={{
-                  duration: 0.65,
-                  delay: 0.04,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                style={{ transformPerspective: 1400 }}
               >
                 <div className="project-card__accent" aria-hidden />
                 <div className="project-card__layout">
@@ -117,17 +80,7 @@ export function Projects() {
                           Latest · Live on stores
                         </p>
                       ) : null}
-                      <ScrollReveal
-                        as="h3"
-                        containerClassName="project-card__name"
-                        textClassName="project-card__name-text"
-                        baseOpacity={0.15}
-                        baseRotation={2}
-                        blurStrength={5}
-                        enableBlur
-                      >
-                        {project.name}
-                      </ScrollReveal>
+                      <h3 className="project-card__name">{project.name}</h3>
                       <p className="project-card__stack">{project.stack}</p>
                       {(project.appStoreUrl || project.playStoreUrl) && (
                         <p className="project-card__links">
@@ -176,7 +129,7 @@ export function Projects() {
                     />
                   </div>
                 </div>
-              </motion.article>
+              </article>
             </SpotlightCard>
           )
         })}

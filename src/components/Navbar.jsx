@@ -3,7 +3,8 @@ import { createPortal } from 'react-dom'
 import { useEffect, useRef, useState } from 'react'
 import { navLinks, profile } from '../data/content'
 
-const SECTION_IDS = navLinks.map((l) => l.id)
+const LINKS = [{ id: 'top', label: 'Home' }, ...navLinks]
+const SECTION_IDS = LINKS.map((l) => l.id)
 
 function IconSun() {
   return (
@@ -38,20 +39,20 @@ function IconClose() {
   )
 }
 
-const MOBILE_NAV_MAX = 720
+const MOBILE_NAV_MAX = 900
 
 export function Navbar({ theme, onToggleTheme }) {
   const headerRef = useRef(null)
-  const [activeId, setActiveId] = useState('')
+  const [activeId, setActiveId] = useState('top')
   const [menuOpen, setMenuOpen] = useState(false)
-  const [headerHeight, setHeaderHeight] = useState(72)
+  const [headerHeight, setHeaderHeight] = useState(88)
 
   useEffect(() => {
     const updateActive = () => {
-      const navH = headerRef.current?.offsetHeight ?? 72
-      const line = window.scrollY + navH + 16
+      const navH = headerRef.current?.offsetHeight ?? 88
+      const line = window.scrollY + navH + 12
 
-      let current = ''
+      let current = 'top'
       for (const id of SECTION_IDS) {
         const el = document.getElementById(id)
         if (!el) continue
@@ -117,25 +118,32 @@ export function Navbar({ theme, onToggleTheme }) {
   const closeMenu = () => setMenuOpen(false)
   const toggleMenu = () => setMenuOpen((o) => !o)
 
+  const nameParts = profile.name.trim().split(/\s+/)
+  const firstName = nameParts[0] || profile.name
+  const lastName = nameParts.slice(1).join(' ')
+
   const { scrollYProgress } = useScroll()
+
   return (
     <motion.header
       ref={headerRef}
       className="nav"
-      initial={{ y: -24, opacity: 0 }}
+      initial={{ y: -28, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
     >
-      <a href="#top" className="nav__brand">
-        {profile.name.split(' ')[0]}
-        <span className="nav__dot">.</span>
-      </a>
-      <div className="nav__end">
-        <nav
-          className="nav__links nav__links--desktop"
-          aria-label="Primary"
-        >
-          {navLinks.map((link) => {
+      <div className="nav__pill">
+        <a href="#top" className="nav__brand" onClick={closeMenu}>
+          <span className="nav__brand-first">Rohit's</span>
+          {lastName ? (
+            <span className="nav__brand-last">Portfolio</span>
+          ) : (
+            <span className="nav__dot">.</span>
+          )}
+        </a>
+
+        <nav className="nav__links nav__links--desktop" aria-label="Primary">
+          {LINKS.map((link) => {
             const isActive = link.id === activeId
             return (
               <a
@@ -151,28 +159,63 @@ export function Navbar({ theme, onToggleTheme }) {
             )
           })}
         </nav>
-        <button
-          type="button"
-          className="nav__menu"
-          onClick={toggleMenu}
-          aria-expanded={menuOpen}
-          aria-controls="nav-mobile-menu"
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-        >
-          {menuOpen ? <IconClose /> : <IconMenu />}
-        </button>
-        <button
-          type="button"
-          className="nav__theme"
-          onClick={onToggleTheme}
-          aria-label={
-            theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
-          }
-          title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
-        >
-          {theme === 'dark' ? <IconSun /> : <IconMoon />}
-        </button>
+
+        <div className="nav__actions">
+          <a href="#contact" className="nav__cta" onClick={closeMenu}>
+            Get in touch
+          </a>
+
+          <button
+            type="button"
+            className="nav__theme"
+            onClick={onToggleTheme}
+            aria-label={
+              theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+            }
+            title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+          >
+            {theme === 'dark' ? <IconSun /> : <IconMoon />}
+          </button>
+
+          {profile.photo ? (
+            <a
+              href="#top"
+              className="nav__avatar"
+              aria-label={`${profile.name} — back to top`}
+              onClick={closeMenu}
+            >
+              <img
+                src={profile.photo}
+                alt=""
+                width={36}
+                height={36}
+                decoding="async"
+              />
+            </a>
+          ) : null}
+
+          <button
+            type="button"
+            className="nav__menu"
+            onClick={toggleMenu}
+            aria-expanded={menuOpen}
+            aria-controls="nav-mobile-menu"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          >
+            {menuOpen ? <IconClose /> : <IconMenu />}
+          </button>
+        </div>
+
+        <motion.div
+          className="nav__scroll-line"
+          aria-hidden
+          style={{
+            scaleX: scrollYProgress,
+            transformOrigin: '0% 50%',
+          }}
+        />
       </div>
+
       {menuOpen &&
         createPortal(
           <div className="nav__drawer">
@@ -186,10 +229,10 @@ export function Navbar({ theme, onToggleTheme }) {
               id="nav-mobile-menu"
               className="nav__drawer-panel"
               aria-label="Primary"
-              style={{ top: headerHeight }}
+              style={{ top: headerHeight + 8 }}
             >
               <ul className="nav__drawer-list">
-                {navLinks.map((link) => {
+                {LINKS.map((link) => {
                   const isActive = link.id === activeId
                   return (
                     <li key={link.id} className="nav__drawer-item">
@@ -208,19 +251,20 @@ export function Navbar({ theme, onToggleTheme }) {
                     </li>
                   )
                 })}
+                <li className="nav__drawer-item">
+                  <a
+                    href="#contact"
+                    className="nav__drawer-cta"
+                    onClick={closeMenu}
+                  >
+                    Get in touch
+                  </a>
+                </li>
               </ul>
             </nav>
           </div>,
           document.body,
         )}
-      <motion.div
-        className="nav__scroll-line"
-        aria-hidden
-        style={{
-          scaleX: scrollYProgress,
-          transformOrigin: '0% 50%',
-        }}
-      />
     </motion.header>
   )
 }

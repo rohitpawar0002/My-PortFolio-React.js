@@ -11,6 +11,7 @@ import { Education } from './components/Education'
 import { Contact } from './components/Contact'
 import { Chatbot } from './components/Chatbot'
 import SplashCursor from './components/animations/SplashCursor'
+import { SiteBackground } from './components/backgrounds/SiteBackground'
 
 const THEME_KEY = 'portfolio-theme'
 
@@ -38,13 +39,14 @@ function App() {
     setTheme((t) => (t === 'dark' ? 'light' : 'dark'))
 
   return (
-    <div className="app">
+    <div className={`app${theme === 'dark' ? ' app--cyber' : ''}`}>
+      {theme === 'dark' ? <SiteBackground /> : null}
       {!reduceMotion ? (
         <SplashCursor
           key={theme}
           TRANSPARENT
           RAINBOW_MODE={false}
-          COLOR={theme === 'light' ? '#0284c7' : '#38bdf8'}
+          COLOR={theme === 'light' ? '#0284c7' : '#22d3ee'}
           BACK_COLOR={{ r: 0, g: 0, b: 0 }}
           SPLAT_RADIUS={0.18}
           SPLAT_FORCE={5200}
