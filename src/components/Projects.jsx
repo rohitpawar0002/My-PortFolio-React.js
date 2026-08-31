@@ -1,9 +1,12 @@
+import { useReducedMotion } from 'framer-motion'
 import { projects } from '../data/content'
 import imgEcommerce from '../assets/project-ecommerce.svg'
 import imgPortfolio from '../assets/project-portfolio.svg'
 import imgTrackiza from '../assets/project-trackiza.svg'
 import { ProjectPhoneSlideshow } from './ProjectPhoneSlideshow'
 import SpotlightCard from './react-bits/SpotlightCard'
+import ScrollFloat from './react-bits/ScrollFloat'
+import ScrollReveal from './react-bits/ScrollReveal'
 import { SectionHeading } from './SectionHeading'
 
 const projectImages = {
@@ -38,6 +41,8 @@ function ProjectMedia({ project, src, mediaClass }) {
 }
 
 export function Projects() {
+  const reduceMotion = useReducedMotion()
+
   return (
     <section className="section" id="projects" aria-labelledby="proj-title">
       <SectionHeading eyebrow="Work" title="Projects" titleId="proj-title" />
@@ -71,7 +76,6 @@ export function Projects() {
                   .filter(Boolean)
                   .join(' ')}
               >
-                <div className="project-card__accent" aria-hidden />
                 <div className="project-card__layout">
                   <div className="project-card__col project-card__col--text">
                     <div className="project-card__body">
@@ -80,8 +84,40 @@ export function Projects() {
                           Latest · Live on stores
                         </p>
                       ) : null}
-                      <h3 className="project-card__name">{project.name}</h3>
-                      <p className="project-card__stack">{project.stack}</p>
+
+                      {reduceMotion ? (
+                        <h3 className="project-card__name">{project.name}</h3>
+                      ) : (
+                        <ScrollReveal
+                          as="h3"
+                          containerClassName="project-card__name"
+                          baseOpacity={0.12}
+                          baseRotation={2}
+                          blurStrength={3}
+                          enableBlur
+                          rotationEnd="top 75%"
+                          wordAnimationEnd="top 58%"
+                        >
+                          {project.name}
+                        </ScrollReveal>
+                      )}
+
+                      {reduceMotion ? (
+                        <p className="project-card__stack">{project.stack}</p>
+                      ) : (
+                        <ScrollFloat
+                          as="p"
+                          containerClassName="project-card__stack"
+                          animationDuration={1}
+                          ease="back.inOut(2)"
+                          scrollStart="top bottom-=10%"
+                          scrollEnd="top 55%"
+                          stagger={0.02}
+                        >
+                          {project.stack}
+                        </ScrollFloat>
+                      )}
+
                       {(project.appStoreUrl || project.playStoreUrl) && (
                         <p className="project-card__links">
                           {project.appStoreUrl ? (
@@ -114,19 +150,56 @@ export function Projects() {
                           ) : null}
                         </p>
                       )}
+
                       <ul className="project-card__list">
-                        {project.points.map((p) => (
-                          <li key={p.slice(0, 40)}>{p}</li>
-                        ))}
+                        {project.points.map((p) =>
+                          reduceMotion ? (
+                            <li key={p.slice(0, 40)}>{p}</li>
+                          ) : (
+                            <li key={p.slice(0, 40)}>
+                              <ScrollReveal
+                                as="span"
+                                containerClassName="project-card__point"
+                                baseOpacity={0.15}
+                                baseRotation={1.5}
+                                blurStrength={2}
+                                enableBlur
+                                rotationEnd="top 80%"
+                                wordAnimationEnd="top 62%"
+                              >
+                                {p}
+                              </ScrollReveal>
+                            </li>
+                          ),
+                        )}
                       </ul>
                     </div>
                   </div>
+
                   <div className="project-card__col project-card__col--media">
-                    <ProjectMedia
-                      project={project}
-                      src={src}
-                      mediaClass={mediaClass}
-                    />
+                    {reduceMotion ? (
+                      <ProjectMedia
+                        project={project}
+                        src={src}
+                        mediaClass={mediaClass}
+                      />
+                    ) : (
+                      <ScrollFloat
+                        as="div"
+                        containerClassName="project-card__media-float"
+                        animationDuration={1.15}
+                        ease="power2.out"
+                        scrollStart="top bottom-=5%"
+                        scrollEnd="center center"
+                        stagger={0}
+                      >
+                        <ProjectMedia
+                          project={project}
+                          src={src}
+                          mediaClass={mediaClass}
+                        />
+                      </ScrollFloat>
+                    )}
                   </div>
                 </div>
               </article>

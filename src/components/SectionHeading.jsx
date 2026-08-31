@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion'
-import ScrollReveal from './react-bits/ScrollReveal'
+import ScrollFloat from './react-bits/ScrollFloat'
 
 export function SectionHeading({ eyebrow, title, titleId }) {
   const reduceMotion = useReducedMotion()
@@ -27,20 +27,19 @@ export function SectionHeading({ eyebrow, title, titleId }) {
           {title}
         </h2>
       ) : (
-        <ScrollReveal
+        <ScrollFloat
           as="h2"
           id={titleId}
           containerClassName="section-head__title"
           textClassName="section-head__title-text"
-          baseOpacity={0.12}
-          baseRotation={2.5}
-          blurStrength={5}
-          enableBlur
-          rotationEnd="top 55%"
-          wordAnimationEnd="top 45%"
+          animationDuration={1}
+          ease="back.inOut(2)"
+          scrollStart="top bottom-=15%"
+          scrollEnd="top 45%"
+          stagger={0.03}
         >
           {title}
-        </ScrollReveal>
+        </ScrollFloat>
       )}
 
       <motion.span

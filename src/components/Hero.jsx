@@ -3,6 +3,7 @@ import { profile } from '../data/content'
 import Threads from './backgrounds/Threads'
 import { HeroCircleAvatar } from './HeroCircleAvatar'
 import { HeroSocial } from './HeroSocial'
+import ScrollFloat from './react-bits/ScrollFloat'
 
 const container = {
   hidden: { opacity: 0 },
@@ -62,13 +63,27 @@ export function Hero({ theme = 'dark' }) {
             <motion.p className="hero__greeting" variants={item}>
               {profile.greeting}
             </motion.p>
-            <motion.h1
-              id="hero-title"
-              className="hero__title hero__title--hero"
-              variants={item}
-            >
-              {profile.name}
-            </motion.h1>
+            {reduceMotion ? (
+              <h1
+                id="hero-title"
+                className="hero__title hero__title--hero"
+              >
+                {profile.name}
+              </h1>
+            ) : (
+              <ScrollFloat
+                as="h1"
+                id="hero-title"
+                containerClassName="hero__title hero__title--hero"
+                animationDuration={1.05}
+                ease="back.inOut(2)"
+                scrollStart="top bottom"
+                scrollEnd="center center"
+                stagger={0.035}
+              >
+                {profile.name}
+              </ScrollFloat>
+            )}
             <motion.p className="hero__role" variants={item}>
               {profile.roleLeadIn}{' '}
               <span className="hero__role-accent">{profile.title}</span>.

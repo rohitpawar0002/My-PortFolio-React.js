@@ -2,19 +2,18 @@
 
 export const profile = {
   name: 'Rohit Pawar',
-  title: 'Frontend & Full-Stack Developer',
+  title: 'Front-End Design Engineer',
   /** Hero intro line (reference-style greeting). */
   greeting: "Hello, it's me",
   /** Shown before the highlighted role, e.g. "And I'm an". */
-  roleLeadIn: "And I'm an",
+  roleLeadIn: "And I'm a",
   tagline:
-    'HRMS attendance (Worklio) with face punch & Live Activities, real-time Angular dashboards, Ionic/Capacitor GPS apps, Node.js/MS SQL APIs, and a React portfolio with a Gemini chatbot and CI/CD.',
-  location: 'Pune, India',
+    'Angular · React · Ionic Capacitor · AI-assisted development (Claude Code, Cursor). Real-time dashboards, GPS tracking, HRMS attendance with face detection, and REST APIs.',
+  location: 'Pune, India (open to UK relocation — visa sponsorship required)',
   phone: '+91 9730023006',
   email: 'rohitt.pawar02@gmail.com',
   linkedin: 'https://www.linkedin.com/in/rohit-pawar-661aa2228',
-  /** Optional — set your GitHub URL when available. */
-  github: '',
+  github: 'https://github.com/rohitpawar0002',
   /** Served from `public/` — see `public/profile-photo.png`. */
   photo: '/profile-photo.png',
   /** Résumé PDF in `public/` (e.g. `public/Rohit_Pawar_Resume.pdf`). */
@@ -23,37 +22,39 @@ export const profile = {
 }
 
 export const summary = [
-  'Frontend & full-stack developer with 2+ years of experience building real-time dashboards, GPS tracking systems, and REST APIs using Angular, React, TypeScript, Ionic, Node.js, and MS SQL.',
-  'Shipped Worklio, a secure HRMS attendance app with on-device face detection, geofencing, push notifications, and iOS Live Activities — rolled out org-wide to 500+ employees. Also built Trackzia for live GPS monitoring across government modules.',
-  'Built this AI-powered portfolio (React, Vite, Framer Motion) with a Gemini chatbot, serverless backend, and automated CI/CD. Skilled at leveraging AI tools to accelerate development and deliver high-performance solutions.',
+  "Front-end developer with 2+ years' experience building real-time dashboards, GPS tracking systems, and REST APIs using Angular, React, TypeScript, Ionic, and Node.js.",
+  'Delivered a secure HRMS attendance app with on-device face detection that cut fraudulent check-ins to near zero, and government GPS-tracking dashboards used for live monitoring of 1,000+ assets.',
+  'Experienced in using AI-assisted coding tools (Claude Code, Cursor AI, Gemini API) to turn rough briefs into working, client-ready interfaces at speed — including an AI-chatbot-powered personal portfolio built end-to-end. Comfortable owning a demo from brief to polished, working front end with minimal specification.',
 ]
 
 export const skills = [
   'Angular',
   'React.js',
   'Ionic',
-  'TypeScript',
-  'JavaScript',
+  'Capacitor',
   'HTML',
   'CSS',
+  'JavaScript',
+  'TypeScript',
   'Tailwind CSS',
   'Bootstrap',
+  'Claude Code',
+  'Cursor AI',
+  'Gemini API',
   'Node.js',
   'Express.js',
   'REST APIs',
   'MS SQL',
   'DynamoDB',
-  'Capacitor',
   'Git',
   'GitHub',
   'GitLab',
   'Netlify',
   'Postman',
-  'Cursor AI',
   'Google Maps API',
   'Razorpay',
   'CI/CD',
-  'Gemini API',
+  'Responsive Design',
 ]
 
 export const experience = [
@@ -63,15 +64,15 @@ export const experience = [
     role: 'Junior Software Developer',
     period: 'Sep 2024 — Present',
     stack:
-      'Angular 16+, TypeScript, Ionic, Capacitor, Node.js, Express.js, MS SQL, REST APIs, Google Maps API, Razorpay, Cursor AI',
+      'Angular 16+, TypeScript, Ionic, Capacitor, Node.js, MS SQL, Cursor AI',
     highlights: [
-      'Built and optimized real-time Angular dashboards for 5+ government monitoring modules using Google Maps and REST APIs, supporting live analytics for 1,000+ tracked assets.',
-      'Delivered Worklio, a secure HRMS attendance app (Ionic, Angular, Capacitor) for iOS/Android covering face-based punch-in/out, geofencing, leave, expenses, payslips, and shift-aware sessions — rolled out org-wide to 500+ employees.',
-      'Engineered on-device face detection with liveness and sharpness checks plus biometric authentication, cutting fraudulent punch-ins by an estimated 90%+ with check-in under 3 seconds.',
-      'Implemented push notifications and iOS Live Activities for real-time break/session status on Lock Screen and Dynamic Island.',
-      'Created Trackzia GPS tracking (Ionic, Capacitor) with geofencing, push alerts, and Cart / Add-to-Cart; used AI tooling to cut Cart feature dev time by ~40%.',
-      'Incorporated Razorpay for secure in-app payments (100+ transactions) and planned 10+ reusable UI components across desktop and mobile.',
-      'Developed 15+ REST API endpoints (Node.js, Express, MS SQL) supporting secure CRUD across 5+ production modules.',
+      'Built and optimised real-time Angular dashboards for 5+ government monitoring modules using Google Maps and REST APIs, supporting live analytics for 1,000+ tracked assets.',
+      'Delivered Worklio, a secure HRMS attendance app (Ionic, Angular, Capacitor) for iOS/Android covering face-based punch-in/out, geofencing, leave, expenses, payslips, and shift-aware sessions — rolled out to 500+ employees, replacing manual attendance tracking.',
+      'Engineered on-device face detection with liveness and sharpness checks plus biometric authentication, cutting fraudulent punch-ins by an estimated 90%+ and bringing check-in time under 3 seconds.',
+      'Built the Trackzia GPS tracking app (Ionic, Capacitor) for real-time device tracking, geofencing alerts, and push notifications; used AI tooling to cut a key feature\'s development time by ~40%.',
+      'Integrated the Razorpay payment gateway for secure in-app payments, processing 100+ transactions with a streamlined flow that cut payment completion time by roughly 25%.',
+      'Built 10+ reusable UI components (Angular, TypeScript, SCSS, Bootstrap), improving cross-device usability and cutting new-screen development time.',
+      'Developed 15+ REST API endpoints (Node.js, Express, MS SQL) supporting secure CRUD operations across 5+ production modules.',
     ],
   },
   {
@@ -278,13 +279,13 @@ export const projects = [
   },
   {
     slug: 'personal-portfolio',
-    name: 'Personal portfolio website (this site)',
-    stack: 'React, Vite, JavaScript, Framer Motion, CSS',
+    name: 'AI-Powered Chatbot Personal Portfolio',
+    stack:
+      'React, Vite, JavaScript, Framer Motion, Google Gemini API, Netlify Functions',
     points: [
-      'Single-page portfolio built with React and Vite: modular sections, shared content in one data module, and fast production builds.',
-      'Motion and UX with Framer Motion, fixed navigation with scroll-based active links, and responsive layouts for projects and contact.',
-      'Rich project previews: 3D iPhone and browser mockups, auto-rotating screenshots, and a lightbox gallery with keyboard navigation.',
-      'AI chatbot powered by Google Gemini API with a serverless Netlify Functions backend and CI/CD from GitHub to Netlify.',
+      'Built a responsive single-page portfolio with project showcases, timeline experience, and motion-driven UI, then extended it with an AI chatbot using the Google Gemini API and a serverless backend.',
+      'Designed context-aware prompt logic to improve chatbot response accuracy and reduce irrelevant replies.',
+      'Set up a full CI/CD pipeline (GitHub, Netlify) for automated, single push-to-deploy releases.',
     ],
   },
   {
@@ -292,21 +293,20 @@ export const projects = [
     name: 'Authentic Papad — E-commerce',
     stack: 'Angular 15, TypeScript, HTML, CSS, Bootstrap',
     points: [
-      'Responsive e-commerce platform with login, cart, and order history.',
-      'Three core modules: authentication, cart management, and order tracking.',
+      'Built a responsive Angular e-commerce platform with authentication, cart management, and order-tracking modules, improving the end-to-end checkout experience.',
     ],
   },
 ]
 
 export const awards = [
   {
-    title: 'Star Performer Award — Nueotel',
+    title: 'Star Performer Award',
     year: '2026',
     detail:
-      'Outstanding performance, commitment, and contribution to project delivery and team collaboration.',
+      'Recognised for outstanding performance and contribution to successful project delivery.',
   },
   {
-    title: 'Certification of Robotics and Embedded Systems',
+    title: 'Certification in Robotics and Embedded Systems',
     year: '',
     detail: 'Formal certification in robotics and embedded systems.',
   },
@@ -316,14 +316,14 @@ export const education = [
   {
     school: 'Modern College, Ganeshkhind',
     location: 'Pune, India',
-    degree: 'MSc-CA',
-    period: 'Jun 2022 — May 2024',
+    degree: 'MSc, Computer Applications',
+    period: '2022 — 2024',
   },
   {
     school: 'Modern College, Ganeshkhind',
     location: 'Pune, India',
-    degree: 'BCA',
-    period: 'Jul 2019 — Apr 2022',
+    degree: 'BCA, Computer Applications',
+    period: '2019 — 2022',
   },
 ]
 

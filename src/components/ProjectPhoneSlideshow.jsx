@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { motion, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { DepthCarouselModal } from './react-bits/DepthCarouselModal'
 
@@ -22,7 +22,6 @@ export function ProjectPhoneSlideshow({
   const videoRef = useRef(/** @type {HTMLVideoElement | null} */ (null))
   const isInView = useInView(wrapRef, { amount: 0.2, margin: '-60px' })
   const [index, setIndex] = useState(0)
-  const [dir, setDir] = useState(1)
   const [reduceMotion, setReduceMotion] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState(
     /** @type {number | null} */ (null),
@@ -51,7 +50,6 @@ export function ProjectPhoneSlideshow({
   useEffect(() => {
     if (n <= 1 || reduceMotion || !isInView) return
     const id = window.setInterval(() => {
-      setDir(1)
       setIndex((i) => (i + 1) % n)
     }, intervalMs)
     return () => window.clearInterval(id)
@@ -118,113 +116,49 @@ export function ProjectPhoneSlideshow({
       ? 'project-browser__shot project-slideshow__shot--zoomable'
       : 'project-device__shot project-slideshow__shot--zoomable'
 
-  const slide = (
-    <AnimatePresence mode="wait" custom={dir} initial={false}>
-      {isVideoShot(current) ? (
-        <motion.video
-          key={current.src}
-          ref={videoRef}
-          src={current.src}
-          poster={current.poster || undefined}
-          className={shotClass}
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          custom={dir}
-          variants={{
-            enter: (d) =>
-              reduceMotion
-                ? { opacity: 0 }
-                : {
-                    opacity: 0,
-                    rotateY: d > 0 ? 48 : -48,
-                    scale: 0.9,
-                    filter: 'blur(4px)',
-                  },
-            center: {
-              opacity: 1,
-              rotateY: 0,
-              scale: 1,
-              filter: 'blur(0px)',
-            },
-            exit: (d) =>
-              reduceMotion
-                ? { opacity: 0 }
-                : {
-                    opacity: 0,
-                    rotateY: d > 0 ? -48 : 48,
-                    scale: 0.9,
-                    filter: 'blur(4px)',
-                  },
-          }}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{ duration: reduceMotion ? 0 : 0.52, ease: [0.22, 1, 0.36, 1] }}
-          onClick={openLightbox}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault()
-              openLightbox()
-            }
-          }}
-          tabIndex={0}
-          role="button"
-          aria-label={`View larger: ${current.label || `screen ${safeIndex + 1}`}`}
-        />
-      ) : (
-        <motion.img
-          key={current.src}
-          src={current.src}
-          alt={current.label || `Screen ${safeIndex + 1}`}
-          className={shotClass}
-          custom={dir}
-          variants={{
-            enter: (d) =>
-              reduceMotion
-                ? { opacity: 0 }
-                : {
-                    opacity: 0,
-                    rotateY: d > 0 ? 48 : -48,
-                    scale: 0.9,
-                    filter: 'blur(4px)',
-                  },
-            center: {
-              opacity: 1,
-              rotateY: 0,
-              scale: 1,
-              filter: 'blur(0px)',
-            },
-            exit: (d) =>
-              reduceMotion
-                ? { opacity: 0 }
-                : {
-                    opacity: 0,
-                    rotateY: d > 0 ? -48 : 48,
-                    scale: 0.9,
-                    filter: 'blur(4px)',
-                  },
-          }}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{ duration: reduceMotion ? 0 : 0.52, ease: [0.22, 1, 0.36, 1] }}
-          loading={safeIndex === 0 ? 'eager' : 'lazy'}
-          decoding="async"
-          onClick={openLightbox}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault()
-              openLightbox()
-            }
-          }}
-          tabIndex={0}
-          role="button"
-          aria-label={`View larger: ${current.label || `screen ${safeIndex + 1}`}`}
-        />
-      )}
-    </AnimatePresence>
+  const shotLabel = `View larger: ${current.label || `screen ${safeIndex + 1}`}`
+
+  const slide = isVideoShot(current) ? (
+    <video
+      key={current.src}
+      ref={videoRef}
+      src={current.src}
+      poster={current.poster || undefined}
+      className={shotClass}
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      onClick={openLightbox}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          openLightbox()
+        }
+      }}
+      tabIndex={0}
+      role="button"
+      aria-label={shotLabel}
+    />
+  ) : (
+    <img
+      key={current.src}
+      src={current.src}
+      alt={current.label || `Screen ${safeIndex + 1}`}
+      className={shotClass}
+      loading={safeIndex === 0 ? 'eager' : 'lazy'}
+      decoding="async"
+      onClick={openLightbox}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          openLightbox()
+        }
+      }}
+      tabIndex={0}
+      role="button"
+      aria-label={shotLabel}
+    />
   )
 
   const lightboxNode = (
@@ -315,10 +249,7 @@ export function ProjectPhoneSlideshow({
                   ? 'project-device__dot is-active'
                   : 'project-device__dot'
               }
-              onClick={() => {
-                setDir(i > safeIndex ? 1 : -1)
-                setIndex(i)
-              }}
+              onClick={() => setIndex(i)}
             />
           ))}
         </div>

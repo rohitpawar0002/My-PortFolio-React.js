@@ -4,6 +4,7 @@ import { experience } from '../data/content'
 import experienceMap from '../assets/experience-map.svg'
 import { Reveal, revealItem } from './animations/Reveal'
 import { AnimatedImage } from './AnimatedImage'
+import ScrollFloat from './react-bits/ScrollFloat'
 import { SectionHeading } from './SectionHeading'
 
 export function Experience() {
@@ -86,7 +87,21 @@ export function Experience() {
                 transition={{ duration: 0.25 }}
               >
                 <div className="timeline__head">
-                  <h3 className="timeline__role">{job.role}</h3>
+                  {reduceMotion ? (
+                    <h3 className="timeline__role">{job.role}</h3>
+                  ) : (
+                    <ScrollFloat
+                      as="h3"
+                      containerClassName="timeline__role"
+                      animationDuration={1}
+                      ease="back.inOut(2)"
+                      scrollStart="top bottom-=10%"
+                      scrollEnd="top 55%"
+                      stagger={0.025}
+                    >
+                      {job.role}
+                    </ScrollFloat>
+                  )}
                   <p className="timeline__company">{job.company}</p>
                   <p className="timeline__meta">
                     {job.location} · {job.period}

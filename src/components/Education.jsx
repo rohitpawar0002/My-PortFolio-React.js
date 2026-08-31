@@ -88,7 +88,7 @@ export function Education() {
         <Reveal variant="up" className="edu-block" delay={0.05}>
           <h3 className="edu-block__h">Education</h3>
           <motion.ul
-            className="edu-list"
+            className="edu-list edu-list--row"
             initial={reduceMotion ? false : 'hidden'}
             whileInView={reduceMotion ? undefined : 'show'}
             viewport={{ once: true }}

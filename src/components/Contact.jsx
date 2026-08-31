@@ -58,8 +58,8 @@ export function Contact() {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          Open to roles in Angular, Ionic, and full-stack development across Pune
-          or remote.
+          Open to roles in front-end and full-stack development — Pune, remote,
+          or UK relocation (visa sponsorship required).
         </motion.p>
         <motion.div
           className="contact__links"
@@ -126,6 +126,22 @@ export function Contact() {
           >
             LinkedIn profile
           </motion.a>
+          {profile.github ? (
+            <motion.a
+              className="contact__link contact__link--secondary"
+              href={profile.github}
+              target="_blank"
+              rel="noreferrer noopener"
+              variants={{
+                hidden: { opacity: 0, y: 14 },
+                show: { opacity: 1, y: 0 },
+              }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              GitHub profile
+            </motion.a>
+          ) : null}
         </motion.div>
         <p className="contact__copy">
           © {new Date().getFullYear()} {profile.name}. Built with React & Framer
