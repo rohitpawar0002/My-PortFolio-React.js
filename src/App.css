@@ -119,7 +119,6 @@
 }
 
 /* Slightly glassier cards over cyber bg */
-.app--cyber .project-card,
 .app--cyber .timeline__card,
 .app--cyber .edu-block,
 .app--cyber .skills__pill {
@@ -1182,7 +1181,9 @@ main {
 }
 
 .section-head__title.scroll-reveal,
-.scroll-reveal.section-head__title {
+.scroll-reveal.section-head__title,
+.section-head__title.scroll-float,
+.scroll-float.section-head__title {
   font-family: var(--font-display);
   font-size: clamp(1.75rem, 4vw, 2.25rem);
   font-weight: 700;
@@ -1491,24 +1492,14 @@ main {
   position: relative;
   padding: 0;
   border-radius: 1rem;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  overflow: hidden;
+  background: transparent;
+  border: none;
+  overflow: visible;
   transform-style: preserve-3d;
 }
 
-/* Allow the 3D phone mockup to move without clipping (see ProjectPhoneSlideshow). */
-.project-card:has(.project-card__media--device),
-.project-card:has(.project-card__media--browser),
-.project-card:has(.project-card__media--model) {
-  overflow: visible;
-}
-
 .project-card--featured {
-  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent),
-    0 24px 48px var(--shadow-card);
+  box-shadow: none;
 }
 
 .project-card__badge {
@@ -1539,10 +1530,17 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--media-well);
+  background: transparent;
   min-height: 220px;
-  border-top: 1px solid var(--border);
+  border: none;
   overflow: visible;
+}
+
+.project-card__media-float {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .project-card__col--media:has(.project-card__media--device),
@@ -1571,8 +1569,7 @@ main {
 
   .project-card__col--media {
     min-height: unset;
-    border-top: none;
-    border-left: 1px solid var(--border);
+    border: none;
   }
 
   .project-card__col--media:has(.project-card__media--device),
@@ -1582,24 +1579,13 @@ main {
 
   .project-card--reverse .project-card__col--media {
     order: 1;
-    border-left: none;
+    border: none;
   }
 
   .project-card--reverse .project-card__col--text {
     order: 2;
-    border-left: 1px solid var(--border);
+    border: none;
   }
-}
-
-.project-card__accent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  z-index: 2;
-  background: linear-gradient(90deg, var(--accent), var(--violet));
-  opacity: 0.9;
 }
 
 .project-card__media {
@@ -1639,6 +1625,7 @@ main {
   overflow: visible;
   perspective: 1100px;
   box-sizing: border-box;
+  background: transparent;
 }
 
 /* Angular web dashboard — browser chrome + rotating screenshots */
@@ -2244,14 +2231,8 @@ main {
 
 .edu-grid {
   display: grid;
-  gap: 2rem;
-}
-
-@media (min-width: 720px) {
-  .edu-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 2.5rem;
-  }
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
 }
 
 .edu-block__h {
@@ -2266,6 +2247,30 @@ main {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+.edu-list--row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .edu-list--row {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 2rem;
+    align-items: stretch;
+  }
+
+  .edu-list--row .edu-list__item {
+    padding: 0.25rem 0;
+    border-bottom: none;
+  }
+
+  .edu-list--row .edu-list__item:not(:last-child) {
+    padding-right: 2rem;
+    border-right: 1px solid var(--border);
+  }
 }
 
 .edu-list__item {
@@ -2603,6 +2608,13 @@ main {
   line-height: 1.2;
 }
 
+.chatbot__title.scroll-float,
+.scroll-float.chatbot__title {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: baseline;
+}
+
 .chatbot__status {
   display: inline-flex;
   align-items: center;
@@ -2784,6 +2796,23 @@ main {
 .chatbot__msg--bot strong {
   color: var(--text-bright);
   font-weight: 600;
+}
+
+.chatbot__link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  word-break: break-word;
+}
+
+.chatbot__link:hover {
+  color: var(--text-bright);
+}
+
+.chatbot__msg--user .chatbot__link {
+  color: inherit;
+  text-decoration: underline;
 }
 
 .chatbot__typing {

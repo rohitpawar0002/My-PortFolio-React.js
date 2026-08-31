@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { profile, projects } from '../data/content.js'
+import ScrollFloat from './react-bits/ScrollFloat'
 
 /** Production: same origin. Dev: Vite proxies /api/chat → your deployed function (no CORS). */
 const CHAT_URL = import.meta.env.DEV
@@ -12,6 +13,8 @@ const SUGGESTIONS = [
   'Tell me about the Trackiza app',
   "What's Rohit working on now?",
   'How can I get in touch?',
+  "What's Rohit's GitHub?",
+  "What's Rohit's LinkedIn?",
 ]
 
 function buildHistory(msgs) {
@@ -30,6 +33,7 @@ function buildHistory(msgs) {
 export function Chatbot() {
   const id = useId()
   const panelId = `${id}-panel`
+  const reduceMotion = useReducedMotion()
   const [open, setOpen] = useState(true)
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -57,10 +61,7 @@ export function Chatbot() {
   }, [messages, open, scrollToEnd])
 
   useEffect(() => {
-    if (!open) {
-      setSuggestOpen(false)
-      return
-    }
+    if (!open) return
     const t = setTimeout(() => inputRef.current?.focus(), 200)
     return () => clearTimeout(t)
   }, [open])
@@ -93,7 +94,6 @@ export function Chatbot() {
 
   const send = useCallback(
     async (raw) => {
-      debugger
       const text = (typeof raw === 'string' ? raw : input).trim()
       if (!text || loading) return
 
@@ -119,13 +119,15 @@ export function Chatbot() {
         if (!reply || typeof reply !== 'string') {
           throw new Error('No reply from assistant')
         }
-        debugger
         setMessages((prev) => [
           ...prev,
-          { id: `a-${Date.now()}`, role: 'assistant', text: reply },
+          {
+            id: `a-${Date.now()}`,
+            role: 'assistant',
+            text: ensureContactLinks(reply, text),
+          },
         ])
       } catch (e) {
-        debugger
         const hint =
           e?.message ||
           'Could not reach the assistant. If you are on `npm run dev` only, use `netlify dev` (or open the live site) so the chat API is available.'
@@ -144,6 +146,8 @@ export function Chatbot() {
     [input, loading, messages],
   )
 
+  const chatTitle = `Ask ${profile.name.split(' ')[0]}`
+
   return (
     <div className="chatbot" aria-live="polite">
       <AnimatePresence>
@@ -152,7 +156,10 @@ export function Chatbot() {
             type="button"
             className="chatbot__backdrop"
             aria-label="Close chat"
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setSuggestOpen(false)
+              setOpen(false)
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -183,7 +190,21 @@ export function Chatbot() {
                   </div>
                   <div className="chatbot__head-text">
                     <div className="chatbot__title-row">
-                      <span className="chatbot__title">Ask {profile.name.split(' ')[0]}</span>
+                      {reduceMotion ? (
+                        <span className="chatbot__title">{chatTitle}</span>
+                      ) : (
+                        <ScrollFloat
+                          as="span"
+                          containerClassName="chatbot__title"
+                          animationDuration={1}
+                          ease="back.inOut(2)"
+                          scrollStart="top bottom"
+                          scrollEnd="center center"
+                          stagger={0.04}
+                        >
+                          {chatTitle}
+                        </ScrollFloat>
+                      )}
                       <span className="chatbot__status" title="Service online">
                         <span className="chatbot__status-dot" />
                         Online
@@ -195,7 +216,10 @@ export function Chatbot() {
                 <button
                   type="button"
                   className="chatbot__icon-btn"
-                  onClick={() => setOpen(false)}
+                  onClick={() => {
+                    setSuggestOpen(false)
+                    setOpen(false)
+                  }}
                   aria-label="Close chat"
                 >
                   <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden>
@@ -372,6 +396,7 @@ export function Chatbot() {
         type="button"
         className={open ? 'chatbot__fab chatbot__fab--open' : 'chatbot__fab chatbot__fab--mascot'}
         onClick={() => {
+          setSuggestOpen(false)
           setOpen((o) => !o)
         }}
         aria-expanded={open}
@@ -429,17 +454,112 @@ function ChatbotHeaderRobot() {
   )
 }
 
-/** Bold **markdown-like** in one line (minimal) */
+const PORTFOLIO_URL =
+  'https://rohitpawar0002.github.io/My-PortFolio-React.js'
+
+/**
+ * If the user asked for GitHub / LinkedIn / portfolio and the model omitted the
+ * full URL, append a markdown link so the UI can render it as clickable.
+ */
+function ensureContactLinks(reply, userText) {
+  const q = userText.toLowerCase()
+  const wantsGithub = /\bgithub\b|\bgit hub\b/.test(q)
+  const wantsLinkedin = /\blinkedin\b|\blinkin\b|\blinking\b/.test(q)
+  const wantsPortfolio =
+    /\bportfolio\b|\bthis site\b|\bwebsite (link|url)\b|\bmy site\b/.test(q)
+
+  const extras = []
+  if (wantsGithub && !/github\.com\/rohitpawar0002/i.test(reply)) {
+    extras.push(`[GitHub](${profile.github})`)
+  }
+  if (wantsLinkedin && !/linkedin\.com\/in\/rohit-pawar/i.test(reply)) {
+    extras.push(`[LinkedIn](${profile.linkedin})`)
+  }
+  if (
+    wantsPortfolio &&
+    !/rohitpawar0002\.github\.io\/My-PortFolio-React\.js/i.test(reply)
+  ) {
+    extras.push(`[Portfolio](${PORTFOLIO_URL})`)
+  }
+
+  if (!extras.length) return reply
+  return `${reply.trim()}\n\n${extras.join(' · ')}`
+}
+
+const INLINE_TOKEN_RE =
+  /(\*\*[^*]+\*\*|\[([^\]]+)\]\((https?:\/\/[^)\s]+|mailto:[^)\s]+|tel:[^)\s]+)\)|(https?:\/\/[^\s<]+)|(www\.(?:github|linkedin)\.com\/[^\s<]+)|(github\.com\/[^\s<]+)|(linkedin\.com\/[^\s<]+))/gi
+
+function normalizeHref(raw) {
+  const href = raw.replace(/[.,;:!?)]+$/, '')
+  if (/^(https?:|mailto:|tel:)/i.test(href)) return href
+  return `https://${href}`
+}
+
+function linkLabel(href) {
+  try {
+    const u = new URL(href)
+    if (u.hostname.includes('github.com') && !u.hostname.includes('github.io')) {
+      return 'GitHub'
+    }
+    if (u.hostname.includes('linkedin.com')) return 'LinkedIn'
+    if (u.hostname.includes('github.io')) return 'Portfolio'
+    return u.hostname.replace(/^www\./, '')
+  } catch {
+    return href
+  }
+}
+
+/** Bold, markdown links, and bare URLs (GitHub / LinkedIn / portfolio). */
 function MessageLine({ line }) {
-  const parts = line.split(/(\*\*[^*]+\*\*)/g)
-  return (
-    <>
-      {parts.map((p, i) => {
-        if (p.startsWith('**') && p.endsWith('**')) {
-          return <strong key={i}>{p.slice(2, -2)}</strong>
-        }
-        return <span key={i}>{p}</span>
-      })}
-    </>
-  )
+  const nodes = []
+  let last = 0
+  let match
+  const re = new RegExp(INLINE_TOKEN_RE.source, INLINE_TOKEN_RE.flags)
+
+  while ((match = re.exec(line)) !== null) {
+    if (match.index > last) {
+      nodes.push(
+        <span key={`t-${last}`}>{line.slice(last, match.index)}</span>,
+      )
+    }
+
+    const full = match[0]
+    if (full.startsWith('**') && full.endsWith('**')) {
+      nodes.push(<strong key={`b-${match.index}`}>{full.slice(2, -2)}</strong>)
+    } else if (match[2] && match[3]) {
+      const href = normalizeHref(match[3])
+      nodes.push(
+        <a
+          key={`md-${match.index}`}
+          className="chatbot__link"
+          href={href}
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          {match[2]}
+        </a>,
+      )
+    } else {
+      const href = normalizeHref(full)
+      nodes.push(
+        <a
+          key={`u-${match.index}`}
+          className="chatbot__link"
+          href={href}
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          {linkLabel(href)}
+        </a>,
+      )
+    }
+
+    last = match.index + full.length
+  }
+
+  if (last < line.length) {
+    nodes.push(<span key={`t-${last}`}>{line.slice(last)}</span>)
+  }
+
+  return nodes.length ? <>{nodes}</> : null
 }
