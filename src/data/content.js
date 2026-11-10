@@ -2,14 +2,14 @@
 
 export const profile = {
   name: 'Rohit Pawar',
-  title: 'Front-End Design Engineer',
+  title: 'Software Developer',
   /** Hero intro line (reference-style greeting). */
   greeting: "Hello, it's me",
   /** Shown before the highlighted role, e.g. "And I'm an". */
   roleLeadIn: "And I'm a",
   tagline:
-    'Angular · React · Ionic Capacitor · AI-assisted development (Claude Code, Cursor). Real-time dashboards, GPS tracking, HRMS attendance with face detection, and REST APIs.',
-  location: 'Pune, India (open to UK relocation — visa sponsorship required)',
+    'Angular · React · Ionic Capacitor · AWS. Real-time dashboards, GPS tracking, HRMS attendance with face detection, REST APIs, and cloud deploy with IAM.',
+  location: 'Pune, India',
   phone: '+91 9730023006',
   email: 'rohitt.pawar02@gmail.com',
   linkedin: 'https://www.linkedin.com/in/rohit-pawar-661aa2228',
@@ -22,9 +22,9 @@ export const profile = {
 }
 
 export const summary = [
-  "Front-end developer with 2+ years' experience building real-time dashboards, GPS tracking systems, and REST APIs using Angular, React, TypeScript, Ionic, and Node.js.",
+  "Software developer with 2+ years' experience building real-time dashboards, GPS tracking systems, and REST APIs using Angular, React, TypeScript, Ionic, and Node.js.",
   'Delivered a secure HRMS attendance app with on-device face detection that cut fraudulent check-ins to near zero, and government GPS-tracking dashboards used for live monitoring of 1,000+ assets.',
-  'Experienced in using AI-assisted coding tools (Claude Code, Cursor AI, Gemini API) to turn rough briefs into working, client-ready interfaces at speed — including an AI-chatbot-powered personal portfolio built end-to-end. Comfortable owning a demo from brief to polished, working front end with minimal specification.',
+  'Experienced in using AI-assisted coding tools (Claude Code, Cursor AI, Gemini API) to turn rough briefs into working, client-ready interfaces at speed — including an AI-chatbot-powered personal portfolio built end-to-end.',
 ]
 
 export const skills = [
@@ -46,6 +46,7 @@ export const skills = [
   'REST APIs',
   'MS SQL',
   'DynamoDB',
+  'AWS',
   'Git',
   'GitHub',
   'GitLab',

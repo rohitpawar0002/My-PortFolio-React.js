@@ -58,8 +58,7 @@ export function Contact() {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          Open to roles in front-end and full-stack development — Pune, remote,
-          or UK relocation (visa sponsorship required).
+          Open to Angular and React software developer roles — Pune or remote.
         </motion.p>
         <motion.div
           className="contact__links"

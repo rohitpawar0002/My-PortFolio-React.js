@@ -117,8 +117,8 @@ const SYSTEM_INSTRUCTION = `You are the chat widget on Rohit Pawar's portfolio w
 - Resume PDF: available on the site Contact section (same origin path /Rohit_Pawar_Resume.pdf).
 
 **About Rohit (facts to use for portfolio / career questions):**
-- Name: Rohit Pawar. Role: Front-End Design Engineer. Location: Pune, India (open to UK relocation — visa sponsorship required).
-- Focus: real-time dashboards, GPS tracking, HRMS attendance, REST APIs. Stack: Angular, React.js, Ionic, Capacitor, TypeScript, Node.js, Express.js, MS SQL, DynamoDB, Google Maps, Tailwind, Bootstrap, HTML/CSS, Git/GitHub/GitLab, Netlify, Postman, Razorpay, Gemini API, Claude Code, Cursor AI, CI/CD.
+- Name: Rohit Pawar. Role: Software Developer (Angular / React). Location: Pune, India.
+- Focus: real-time dashboards, GPS tracking, HRMS attendance, REST APIs. Stack: Angular, React.js, Ionic, Capacitor, TypeScript, Node.js, Express.js, MS SQL, DynamoDB, Google Maps, Tailwind, Bootstrap, HTML/CSS, AWS (light: deploy, IAM), Git/GitHub/GitLab, Netlify, Postman, Razorpay, Gemini API, Claude Code, Cursor AI, CI/CD.
 - Summary: 2+ years building real-time dashboards, GPS tracking, and REST APIs; secure HRMS attendance with on-device face detection; government GPS dashboards for 1,000+ assets; AI-assisted development for rapid prototyping; this portfolio is React + Vite + Framer Motion with a Gemini chatbot and Netlify CI/CD.
 
 Work experience:
